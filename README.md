@@ -38,7 +38,7 @@ Copyright © Sojung Park (Bei) All rights reserved.
 
 
 ## 🍀 Members
-| [![텍스트](https://avatars.githubusercontent.com/u/148514354?v=4)](https://github.com/JungMINI-developer) | [![텍스트](https://avatars.githubusercontent.com/)](https://github.com/) | [![텍스트](https://avatars.githubusercontent.com/u/201934801?v=4)](https://github.com/DimbongCHOI) |
+| [![텍스트](https://avatars.githubusercontent.com/u/148514354?v=4)](https://github.com/JungMINI-developer) | [![텍스트](https://avatars.githubusercontent.com/u/230069386?v=4)](https://github.com/jagabi816) | [![텍스트](https://avatars.githubusercontent.com/u/201934801?v=4)](https://github.com/DimbongCHOI) |
 |:---:|:---:|:---:|
 | 제이엠/김정민 | 다니/김다니엘 | 딤봉/최규찬 |
 
