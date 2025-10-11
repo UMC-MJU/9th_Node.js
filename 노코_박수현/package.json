@@ -12,6 +12,7 @@
     "dev": "nodemon --exec node src/index.js"
   },
   "dependencies": {
+    "dotenv": "^17.2.3",
     "express": "^5.0.0"
   },
   "devDependencies": {
