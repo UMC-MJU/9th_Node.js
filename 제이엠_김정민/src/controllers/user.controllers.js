@@ -7,8 +7,14 @@ export const handleUserSignUp = async (req, res, next) => {
   console.log("회원가입을 요청했습니다!");
   console.log("body:", req.body); // 값이 잘 들어오나 확인하기 위한 테스트용
 
-  const user = await userSignUp(bodyToUser(req.body));
-  //bodyToUser => DTO
-  res.status(StatusCodes.OK).json({ result: user });
-  // StatusCodes는 라이브러리를 통해 응답 상태 코드를 상수로 사용할 수 있도록 함.
+  try {
+    const user = await userSignUp(bodyToUser(req.body));
+    // bodyToUser => DTO
+    res.status(StatusCodes.CREATED).json({ result: user });
+  } catch (err) {
+    // 중복 이메일 등 비즈니스 오류 처리
+    res
+      .status(StatusCodes.BAD_REQUEST)
+      .json({ message: err.message || "요청을 처리할 수 없습니다." });
+  }
 };

@@ -19,8 +19,9 @@ app.get("/", (req, res) => {
   res.send("Hello World!");
 });
 
-//정해진 URL로 POST요청을 보내면 handleUSerSignUp 함수가 실행됨.
-app.post("/api/v1/users/singup", handleUserSignUp);
+// 정해진 URL로 POST요청을 보내면 handleUserSignUp 함수가 실행됨.
+// 오타 수정: singup -> signup
+app.post("/api/v1/users/signup", handleUserSignUp);
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);

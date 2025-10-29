@@ -1,13 +1,26 @@
+const pad = (n) => String(n).padStart(2, "0");
+const toMySQLDate = (v) => {
+  const d = new Date(v);
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+};
+const toMySQLDateTime = (v) => {
+  const d = v ? new Date(v) : new Date();
+  return (
+    `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ` +
+    `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`
+  );
+};
+
 export const bodyToUser = (body) => {
-  const birth = new Date(body.birth); //날짜 변환
+  const birth = new Date(body.birth); // 날짜 변환
 
   return {
     email: body.email, //필수
     name: body.name, // 필수
     gender: body.gender, // 필수
-    birth, // 필수
+    birth: toMySQLDate(birth), // 필수
     phoneNumber: body.phoneNumber, //필수
-    createAt: body.createAt, //필수
+    createAt: toMySQLDateTime(body.createAt), // 필수 (ISO 8601 문자열)
 
     province: body.province, //선택 (도)
     district: body.district, //선택 (시/군/구)
@@ -32,11 +45,11 @@ export const responseFromUser = (data) => {
 
   // 날짜 변환 (DB에서 Date 객체 또는 문자열로 넘어왔다고 가정)
   const birthDate = singleUser.birth ? new Date(singleUser.birth) : null;
-  const createAtDate = singleUser.created_at
-    ? new Date(singleUser.created_at)
+  const createAtDate = singleUser.create_at
+    ? new Date(singleUser.create_at)
     : null;
-  const updateAtDate = singleUser.updated_at
-    ? new Date(singleUser.updated_at)
+  const updateAtDate = singleUser.update_at
+    ? new Date(singleUser.update_at)
     : null;
 
   const birthString = birthDate ? birthDate.toISOString().split("T")[0] : null; // YYYY-MM-DD
@@ -49,7 +62,7 @@ export const responseFromUser = (data) => {
   return {
     // 유저 기본 정보 (DB 필드명을 카멜 케이스로 변환)
     id: singleUser.id, // 유저 ID
-    addressId: singleUser.adress_id, // DB 필드: adress_id (오타가 있어도 DB 스키마를 따릅니다)
+    addressId: singleUser.address_id, // DB 필드: address_id
     email: singleUser.email,
     name: singleUser.name,
     gender: singleUser.gender,
@@ -64,7 +77,7 @@ export const responseFromUser = (data) => {
 
     status: singleUser.status || null,
 
-    // 선호 음식 카테고리 리스트 (user_favorite_food 테이블에서 조회된 이름 목록)
+    // 선호 음식 카테고리 리스트 (user_favor_category 조인 결과의 이름 목록)
     favoriteFoods: favoriteFoodCategoriesNames,
   };
 };
