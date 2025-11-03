@@ -4,6 +4,8 @@ import express from "express"; // -> ES Module
 import cors from "cors";
 import { handleUserSignUp } from "./controllers/user.controllers.js";
 import { handleCreateReview } from "./controllers/review.controllers.js";
+import { handleCreateRestaurant } from "./controllers/restaurant.controllers.js";
+import { handleAddMissionToRestaurant } from "./controllers/mission.controllers.js";
 
 dotenv.config();
 
@@ -27,6 +29,15 @@ app.post("/api/v1/users/signup", handleUserSignUp);
 
 // 레스토랑 리뷰 생성
 app.post("/api/v1/restaurants/:restaurantId/reviews", handleCreateReview);
+
+// 특정 지역에 가게 생성
+app.post("/api/v1/regions/:regionId/restaurants", handleCreateRestaurant);
+
+// 가게에 미션 추가
+app.post(
+  "/api/v1/restaurants/:restaurantId/missions",
+  handleAddMissionToRestaurant
+);
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
