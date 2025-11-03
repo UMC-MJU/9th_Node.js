@@ -6,6 +6,7 @@ import { handleUserSignUp } from "./controllers/user.controllers.js";
 import { handleCreateReview } from "./controllers/review.controllers.js";
 import { handleCreateRestaurant } from "./controllers/restaurant.controllers.js";
 import { handleAddMissionToRestaurant } from "./controllers/mission.controllers.js";
+import { handleStartUserMission } from "./controllers/userMission.controllers.js";
 
 dotenv.config();
 
@@ -37,6 +38,12 @@ app.post("/api/v1/regions/:regionId/restaurants", handleCreateRestaurant);
 app.post(
   "/api/v1/restaurants/:restaurantId/missions",
   handleAddMissionToRestaurant
+);
+
+// 유저가 가게의 특정 미션 도전 시작
+app.post(
+  "/api/v1/restaurants/:restaurantId/missions/:missionId/user-missions",
+  handleStartUserMission
 );
 
 app.listen(port, () => {
