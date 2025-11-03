@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import express from "express"; // -> ES Module
 import cors from "cors";
 import { handleUserSignUp } from "./controllers/user.controllers.js";
+import { handleCreateReview } from "./controllers/review.controllers.js";
 
 dotenv.config();
 
@@ -19,9 +20,13 @@ app.get("/", (req, res) => {
   res.send("Hello World!");
 });
 
-// 정해진 URL로 POST요청을 보내면 handleUserSignUp 함수가 실행됨.
-// 오타 수정: singup -> signup
+// 정해진 URL로 POST요청을 보내면 함수가 실행됨.
+
+//회원가입 요청 처리
 app.post("/api/v1/users/signup", handleUserSignUp);
+
+// 레스토랑 리뷰 생성
+app.post("/api/v1/restaurants/:restaurantId/reviews", handleCreateReview);
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
