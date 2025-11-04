@@ -4,6 +4,7 @@ export const bodyToUser = (body) => {
     return {
       email: body.email, //필수 
       name: body.name, // 필수
+      password: body.password, // 필수 - 해싱 전 비밀번호
       gender: body.gender, // 필수
       birth, // 필수
       address: body.address || "", //선택 

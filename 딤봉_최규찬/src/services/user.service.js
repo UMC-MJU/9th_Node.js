@@ -5,11 +5,16 @@ import {
   getUserPreferencesByUserId,
   setPreference,
 } from "../repositories/user.repository.js";
+import { hashPassword } from "../utils/bcrypt.js";
 
 export const userSignUp = async (data) => {
+  // 비밀번호 해싱
+  const hashedPassword = await hashPassword(data.password);
+
   const joinUserId = await addUser({
     email: data.email,
     name: data.name,
+    password: hashedPassword, // 해싱된 비밀번호 저장
     gender: data.gender,
     birth: data.birth,
     address: data.address,

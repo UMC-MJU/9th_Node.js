@@ -15,10 +15,11 @@ export const addUser = async (data) => {
     }
 
     const [result] = await pool.query(
-      `INSERT INTO user (email, name, gender, birth, address, detail_address, phone_number) VALUES (?, ?, ?, ?, ?, ?, ?);`,
+      `INSERT INTO user (email, name, password, gender, birth, address, detail_address, phone_number) VALUES (?, ?, ?, ?, ?, ?, ?, ?);`,
       [
         data.email,
         data.name,
+        data.password, // 해싱된 비밀번호
         data.gender,
         data.birth,
         data.address,
@@ -37,12 +38,15 @@ export const addUser = async (data) => {
   }
 };
 
-// 사용자 정보 얻기
+// 사용자 정보 얻기 (비밀번호 제외)
 export const getUser = async (userId) => {
   const conn = await pool.getConnection();
 
   try {
-    const [user] = await pool.query(`SELECT * FROM user WHERE id = ?;`, userId);
+    const [user] = await pool.query(
+      `SELECT id, email, name, gender, birth, address, detail_address, phone_number FROM user WHERE id = ?;`,
+      userId
+    );
 
     console.log(user);
 
