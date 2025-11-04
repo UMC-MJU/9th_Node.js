@@ -45,8 +45,8 @@ export const addUser = async (data) => {
     // 3) user 생성
     const updateAt = data.createAt; // 최초 생성 시 동일 시간으로 저장
     const [userInsert] = await conn.query(
-      `INSERT INTO user (address_id, email, phone_number, name, gender, birth, create_at, update_at, status) 
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);`,
+      `INSERT INTO user (address_id, email, phone_number, name, gender, birth, create_at, update_at, status, password) 
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`,
       [
         addressId,
         data.email,
@@ -57,6 +57,7 @@ export const addUser = async (data) => {
         data.createAt,
         updateAt,
         null,
+        data.passwordHash,
       ]
     );
 

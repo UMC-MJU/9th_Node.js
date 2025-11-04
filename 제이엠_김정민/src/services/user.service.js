@@ -1,3 +1,4 @@
+import bcrypt from "bcrypt";
 import { responseFromUser } from "../dtos/user.dto.js";
 import {
   addUser,
@@ -7,6 +8,10 @@ import {
 } from "../repositories/user.repositories.js";
 
 export const userSignUp = async (data) => {
+  // 비밀번호 해싱
+  const passwordHash = data.password
+    ? await bcrypt.hash(String(data.password), 10)
+    : null;
   const joinUserId = await addUser({
     email: data.email,
     name: data.name,
@@ -18,6 +23,7 @@ export const userSignUp = async (data) => {
     district: data.district,
     detailAddress: data.detailAddress,
     favoriteFoods: data.favoriteFoods,
+    passwordHash,
   });
 
   if (joinUserId === null) {

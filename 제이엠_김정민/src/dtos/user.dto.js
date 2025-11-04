@@ -26,6 +26,7 @@ export const bodyToUser = (body) => {
     district: body.district, //선택 (시/군/구)
     detailAddress: body.detailAddress || "", //선택
     favoriteFoods: body.favoriteFoods, //필수
+    password: body.password, //필수
   };
 };
 
