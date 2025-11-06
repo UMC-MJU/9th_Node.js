@@ -18,4 +18,4 @@ prisma/generated/
 
 # Database migration history and schema files MUST be committed:
 !/prisma/schema.prisma
-!/prisma/migrations
+# !/prisma/migrations
