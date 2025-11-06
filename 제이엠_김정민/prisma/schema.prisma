@@ -1,0 +1,137 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model address {
+  id             Int    @id @default(autoincrement())
+  detail_address String @db.VarChar(255)
+  region_id      Int
+
+  @@index([region_id], map: "idx_address_region_id")
+}
+
+model comment {
+  id              Int      @id @default(autoincrement())
+  user_id         Int
+  review_id       Int
+  comment_content String   @db.Text
+  created_at      DateTime @default(now()) @db.DateTime(0)
+
+  @@index([review_id], map: "idx_comment_review_id")
+  @@index([user_id], map: "idx_comment_user_id")
+}
+
+model food_category {
+  id        Int    @id @default(autoincrement())
+  food_type String @db.VarChar(50)
+}
+
+model mission {
+  id           Int     @id @default(autoincrement())
+  name         String  @db.VarChar(100)
+  description  String? @db.Text
+  is_active    Boolean @default(true)
+  point_reward Int
+}
+
+model point {
+  id           Int      @id @default(autoincrement())
+  user_id      Int
+  point_amount Int
+  type         String   @db.VarChar(50)
+  description  String?  @db.VarChar(255)
+  created_at   DateTime @default(now()) @db.DateTime(0)
+
+  @@index([user_id], map: "idx_point_user_id")
+}
+
+model region {
+  id       Int    @id @default(autoincrement())
+  province String @db.VarChar(20)
+  district String @db.VarChar(20)
+}
+
+model restaurant {
+  id           Int    @id @default(autoincrement())
+  address_id   Int
+  name         String @db.VarChar(100)
+  point_reward Int    @default(0)
+
+  @@index([address_id], map: "idx_restaurant_address_id")
+}
+
+model restaurant_food_map {
+  id            Int @id @default(autoincrement())
+  food_id       Int
+  restaurant_id Int
+
+  @@unique([food_id, restaurant_id], map: "uq_rfm_food_restaurant")
+  @@index([restaurant_id], map: "idx_rfm_restaurant_id")
+}
+
+model restaurant_mission_map {
+  restaurant_id Int
+  mission_id    Int
+
+  @@id([restaurant_id, mission_id])
+  @@index([mission_id], map: "idx_rmm_mission_id")
+}
+
+model review {
+  id            Int      @id @default(autoincrement())
+  user_id       Int
+  restaurant_id Int
+  description   String   @db.Text
+  created_at    DateTime @default(now()) @db.DateTime(0)
+  rating        Decimal  @db.Decimal(2, 1)
+
+  @@index([restaurant_id], map: "idx_review_restaurant_id")
+  @@index([user_id], map: "idx_review_user_id")
+}
+
+model user {
+  id           Int         @id @default(autoincrement())
+  address_id   Int
+  email        String      @unique(map: "email") @db.VarChar(255)
+  phone_number String?     @db.VarChar(20)
+  name         String      @db.VarChar(100)
+  gender       user_gender
+  birth        DateTime    @db.Date
+  create_at    DateTime    @db.DateTime(0)
+  update_at    DateTime    @db.DateTime(0)
+  status       String?     @db.VarChar(20)
+  password     String      @db.VarChar(255)
+
+  @@index([address_id], map: "FK_User_Address")
+}
+
+model user_favor_category {
+  user_id          Int
+  food_category_id Int
+
+  @@id([user_id, food_category_id])
+  @@index([food_category_id], map: "fk_ufc_food")
+}
+
+model user_mission {
+  id           Int       @id @default(autoincrement())
+  user_id      Int
+  mission_id   Int
+  completed_at DateTime? @db.DateTime(0)
+  created_at   DateTime  @default(now()) @db.DateTime(0)
+  is_active    Boolean   @default(true)
+
+  @@unique([user_id, mission_id], map: "uq_user_mission")
+  @@index([mission_id], map: "idx_um_mission_id")
+  @@index([user_id], map: "idx_um_user_id")
+}
+
+enum user_gender {
+  MALE
+  FEMALE
+}
