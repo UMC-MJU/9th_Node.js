@@ -10,7 +10,11 @@
     "dev": "nodemon -e js,json,prisma --exec \"prisma generate && node src/index.js\"",
     "prisma:generate": "prisma generate",
     "prisma:pull": "prisma db pull",
-    "prisma:studio": "prisma studio"
+    "prisma:studio": "prisma studio",
+    "migrate:dev": "prisma migrate dev",
+    "migrate:deploy": "prisma migrate deploy",
+    "migrate:reset": "prisma migrate reset --force",
+    "migrate:status": "prisma migrate status"
   },
   "author": "",
   "license": "ISC",

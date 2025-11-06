@@ -10,25 +10,43 @@ datasource db {
 model address {
   id             Int    @id @default(autoincrement())
   detail_address String @db.VarChar(255)
-  region_id      Int
+  region_id      Int //FK 필드
+  region         region  @relation(fields: [region_id], references: [id])
 
-  @@index([region_id], map: "idx_address_region_id")
+  // 2. 역참조 필드 추가 1:1 관계 
+  restaurants restaurant?  //모든 주소는 레스토랑을 가짐.
+  users user? //모든 주소는 사용자를 가짐.
+
+}
+
+model region {
+  id       Int    @id @default(autoincrement())
+  province String @db.VarChar(20)
+  district String @db.VarChar(20)
+  
+  addresses address[]
+  // 모든 지역은 주소를 가짐. 하나의 지역에 여러 주소가 있을 수 있음.
+
+  @@unique([province, district], map: "uq_region_province_district")
+
 }
 
 model comment {
   id              Int      @id @default(autoincrement())
   user_id         Int
+  user            user    @relation(fields: [user_id], references: [id])
   review_id       Int
+  review          review  @relation(fields: [review_id], references: [id])
   comment_content String   @db.Text
   created_at      DateTime @default(now()) @db.DateTime(0)
-
-  @@index([review_id], map: "idx_comment_review_id")
-  @@index([user_id], map: "idx_comment_user_id")
+  
 }
 
 model food_category {
   id        Int    @id @default(autoincrement())
   food_type String @db.VarChar(50)
+  favorite_by_user_maps user_favor_category[] // 음식 카테고리는 여러 사용자를 가질 수 있음.
+  restaurant_food_map restaurant_food_map[] // 음식 카테고리는 여러 레스토랑을 가질 수 있음.
 }
 
 model mission {
@@ -37,101 +55,126 @@ model mission {
   description  String? @db.Text
   is_active    Boolean @default(true)
   point_reward Int
+
+  points point[] // 모든 미션은 포인트를 가짐. 하나의 미션에 여러 포인트가 있을 수 있음.
+  restaurant_mission_map restaurant_mission_map[] // 미션은 여러 레스토랑을 가질 수 있음. 
+  user_mission user_mission[] // 미션은 여러 사용자를 가질 수 있음.
 }
 
 model point {
   id           Int      @id @default(autoincrement())
-  user_id      Int
+  user         user    @relation(fields: [user_id], references: [id])
+  user_id      Int      @unique
+  mission_id   Int
+  mission      mission @relation(fields: [mission_id], references: [id])
   point_amount Int
   type         String   @db.VarChar(50)
   description  String?  @db.VarChar(255)
   created_at   DateTime @default(now()) @db.DateTime(0)
-
-  @@index([user_id], map: "idx_point_user_id")
 }
 
-model region {
-  id       Int    @id @default(autoincrement())
-  province String @db.VarChar(20)
-  district String @db.VarChar(20)
-}
+
 
 model restaurant {
   id           Int    @id @default(autoincrement())
-  address_id   Int
+  address_id   Int    @unique
+  address address@relation(fields: [address_id], references: [id], onDelete: Cascade)
   name         String @db.VarChar(100)
   point_reward Int    @default(0)
 
+  reviews review[]
+  missions restaurant_mission_map[] // 레스토랑은 여러 미션을 가질 수 있음.
+  restaurant_food_map restaurant_food_map[] // 레스토랑은 여러 음식 카테고리를 가질 수 있음.
   @@index([address_id], map: "idx_restaurant_address_id")
+
 }
 
 model restaurant_food_map {
   id            Int @id @default(autoincrement())
-  food_id       Int
+  food_category food_category @relation(fields: [food_category_id], references: [id])
+  food_category_id Int
   restaurant_id Int
+  restaurant    restaurant @relation(fields: [restaurant_id], references: [id])
 
-  @@unique([food_id, restaurant_id], map: "uq_rfm_food_restaurant")
-  @@index([restaurant_id], map: "idx_rfm_restaurant_id")
+  @@unique([food_category_id, restaurant_id], map: "uq_rfm_food_restaurant")
 }
 
 model restaurant_mission_map {
   restaurant_id Int
+  restaurant    restaurant @relation(fields: [restaurant_id], references: [id])
   mission_id    Int
-
+  mission      mission @relation(fields: [mission_id], references: [id])
   @@id([restaurant_id, mission_id])
-  @@index([mission_id], map: "idx_rmm_mission_id")
+
 }
 
 model review {
   id            Int      @id @default(autoincrement())
   user_id       Int
+  user          user    @relation(fields: [user_id], references: [id])
   restaurant_id Int
+  restaurant    restaurant @relation(fields: [restaurant_id], references: [id])
   description   String   @db.Text
   created_at    DateTime @default(now()) @db.DateTime(0)
   rating        Decimal  @db.Decimal(2, 1)
 
-  @@index([restaurant_id], map: "idx_review_restaurant_id")
-  @@index([user_id], map: "idx_review_user_id")
+  comments comment[]
+
 }
 
 model user {
   id           Int         @id @default(autoincrement())
-  address_id   Int
+  address_id   Int         @unique
+  address      address    @relation(fields: [address_id], references: [id])
   email        String      @unique(map: "email") @db.VarChar(255)
-  phone_number String?     @db.VarChar(20)
+  phone_number String     @db.VarChar(20)
   name         String      @db.VarChar(100)
-  gender       user_gender
+  gender       Gender
   birth        DateTime    @db.Date
-  create_at    DateTime    @db.DateTime(0)
-  update_at    DateTime    @db.DateTime(0)
-  status       String?     @db.VarChar(20)
+  create_at    DateTime    @default(now()) @db.DateTime(0)
+  update_at    DateTime    @default(now()) @db.DateTime(0)
+  status       Status     @default(ACTIVE)
   password     String      @db.VarChar(255)
 
-  @@index([address_id], map: "FK_User_Address")
+  points point?
+  comments comment[]
+  reviews review[]
+  favorite_category_maps user_favor_category[] // 사용자는 여러 음식 카테고리를 가질 수 있음.
+  user_mission user_mission[] // 사용자는 여러 미션을 가질 수 있음.
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+}
+
+enum Status {
+  ACTIVE
+  INACTIVE
+  SUSPENDED
+  DELETED
 }
 
 model user_favor_category {
   user_id          Int
+  user             user        @relation(fields: [user_id], references: [id])
   food_category_id Int
+  food_category    food_category  @relation(fields: [food_category_id], references: [id])
 
   @@id([user_id, food_category_id])
-  @@index([food_category_id], map: "fk_ufc_food")
+  @@map("user_favor_category")
 }
 
 model user_mission {
   id           Int       @id @default(autoincrement())
   user_id      Int
+  user         user       @relation(fields: [user_id], references: [id])
   mission_id   Int
+  mission      mission @relation(fields: [mission_id], references: [id])
   completed_at DateTime? @db.DateTime(0)
   created_at   DateTime  @default(now()) @db.DateTime(0)
   is_active    Boolean   @default(true)
 
   @@unique([user_id, mission_id], map: "uq_user_mission")
-  @@index([mission_id], map: "idx_um_mission_id")
-  @@index([user_id], map: "idx_um_user_id")
-}
-
-enum user_gender {
-  MALE
-  FEMALE
 }
