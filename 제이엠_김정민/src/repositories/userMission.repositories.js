@@ -1,40 +1,39 @@
-import { pool } from "../db.config.js";
+import { prisma } from "../db.config.js";
 
 export const isUserMissionActive = async (userId, missionId) => {
-  const conn = await pool.getConnection();
-  try {
-    const [rows] = await conn.query(
-      `SELECT 1 FROM user_mission WHERE user_id = ? AND mission_id = ? AND is_active = 1 LIMIT 1;`,
-      [userId, missionId]
-    );
-    return rows.length > 0;
-  } finally {
-    conn.release();
-  }
+  const found = await prisma.user_mission.findFirst({
+    where: {
+      user_id: Number(userId),
+      mission_id: Number(missionId),
+      is_active: true,
+    },
+    select: { id: true },
+  });
+  return !!found;
 };
 
 export const createUserMissionActive = async (userId, missionId) => {
-  const conn = await pool.getConnection();
-  try {
-    const [result] = await conn.query(
-      `INSERT INTO user_mission (user_id, mission_id, is_active) VALUES (?, ?, 1);`,
-      [userId, missionId]
-    );
-    return result.insertId;
-  } finally {
-    conn.release();
-  }
+  const created = await prisma.user_mission.create({
+    data: {
+      user_id: Number(userId),
+      mission_id: Number(missionId),
+      is_active: true,
+    },
+    select: { id: true },
+  });
+  return created.id;
 };
 
 export const getUserMissionById = async (id) => {
-  const conn = await pool.getConnection();
-  try {
-    const [rows] = await conn.query(
-      `SELECT id, user_id, mission_id, is_active, created_at, completed_at FROM user_mission WHERE id = ?;`,
-      [id]
-    );
-    return rows.length ? rows[0] : null;
-  } finally {
-    conn.release();
-  }
+  return await prisma.user_mission.findUnique({
+    where: { id: Number(id) },
+    select: {
+      id: true,
+      user_id: true,
+      mission_id: true,
+      is_active: true,
+      created_at: true,
+      completed_at: true,
+    },
+  });
 };

@@ -1,12 +1,15 @@
 import { responseFromReview } from "../dtos/review.dto.js";
+import { prisma } from "../db.config.js";
 import {
-  restaurantExists,
   createReview,
   getReviewById,
 } from "../repositories/review.repositories.js";
 
 export const addReview = async (data) => {
-  const exists = await restaurantExists(data.restaurantId);
+  const exists = await prisma.restaurant.findUnique({
+    where: { id: Number(data.restaurantId) },
+    select: { id: true },
+  });
   if (!exists) {
     throw new Error("존재하지 않는 가게입니다.");
   }
