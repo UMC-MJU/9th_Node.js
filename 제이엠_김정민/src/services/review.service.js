@@ -1,8 +1,9 @@
-import { responseFromReview } from "../dtos/review.dto.js";
+import { responseFromReview, responseFromReviews } from "../dtos/review.dto.js";
 import { prisma } from "../db.config.js";
 import {
   createReview,
   getReviewById,
+  getAllRestaurantReviews,
 } from "../repositories/review.repositories.js";
 
 export const addReview = async (data) => {
@@ -17,4 +18,15 @@ export const addReview = async (data) => {
   const insertedId = await createReview(data);
   const review = await getReviewById(insertedId);
   return responseFromReview(review);
+};
+
+export const listRestaurantReviews = async (restaurantId, cursor = 0) => {
+  const normalizedRestaurantId = Number(restaurantId);
+  const normalizedCursor = Number(cursor) || 0;
+
+  const reviews = await getAllRestaurantReviews(
+    normalizedRestaurantId,
+    normalizedCursor
+  );
+  return responseFromReviews(reviews);
 };

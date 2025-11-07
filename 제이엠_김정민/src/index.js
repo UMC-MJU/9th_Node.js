@@ -3,11 +3,14 @@ import dotenv from "dotenv";
 import express from "express"; // -> ES Module
 import cors from "cors";
 import { handleUserSignUp } from "./controllers/user.controllers.js";
-import { handleCreateReview } from "./controllers/review.controllers.js";
+import {
+  handleCreateReview,
+  handleListRestaurantReviews,
+} from "./controllers/review.controllers.js";
 import { handleCreateRestaurant } from "./controllers/restaurant.controllers.js";
 import { handleAddMissionToRestaurant } from "./controllers/mission.controllers.js";
 import { handleStartUserMission } from "./controllers/userMission.controllers.js";
-import { handleListStoreReviews } from "./controllers/restaurant.controllers.js";
+// 리뷰 목록 조회는 리뷰 컨트롤러로 이동
 
 dotenv.config();
 
@@ -47,7 +50,10 @@ app.post(
   handleStartUserMission
 );
 // 가게에 속한 모든 리뷰 조회
-app.get("/api/v1/restaurants/:restaurantID/reviews", handleListStoreReviews);
+app.get(
+  "/api/v1/restaurants/:restaurantID/reviews",
+  handleListRestaurantReviews
+);
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);

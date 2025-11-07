@@ -99,18 +99,4 @@ export const getRestaurantById = async (restaurantId) => {
   };
 };
 
-export const getAllRestaurantReviews = async (restaurantId, cursor) => {
-  const reviews = await prisma.review.findMany({
-    select: {
-      id: true,
-      user_id: true,
-      restaurant_id: true,
-      description: true,
-      rating: true,
-    },
-    where: { restaurant_id: restaurantId, id: { gt: cursor } },
-    orderBy: { id: "asc" },
-    take: 5, // 가장 위에서 5개의 레코드만 반환.
-  });
-  return reviews;
-};
+// 리뷰 관련 조회는 review.repositories로 이동했습니다.
