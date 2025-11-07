@@ -7,6 +7,7 @@ import { handleCreateReview } from "./controllers/review.controllers.js";
 import { handleCreateRestaurant } from "./controllers/restaurant.controllers.js";
 import { handleAddMissionToRestaurant } from "./controllers/mission.controllers.js";
 import { handleStartUserMission } from "./controllers/userMission.controllers.js";
+import { handleListStoreReviews } from "./controllers/restaurant.controllers.js";
 
 dotenv.config();
 
@@ -45,6 +46,8 @@ app.post(
   "/api/v1/restaurants/:restaurantId/missions/:missionId/user-missions",
   handleStartUserMission
 );
+// 가게에 속한 모든 리뷰 조회
+app.get("/api/v1/restaurants/:restaurantID/reviews", handleListStoreReviews);
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);

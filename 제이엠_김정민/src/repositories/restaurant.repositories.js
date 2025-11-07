@@ -1,4 +1,5 @@
 import { prisma } from "../db.config.js";
+
 export const createRestaurantWithAddress = async (data) => {
   // province/district가 있으면 해당 region을 upsert, 없으면 regionId 사용
   const result = await prisma.$transaction(async (tx) => {
@@ -10,6 +11,7 @@ export const createRestaurantWithAddress = async (data) => {
     if (dup) {
       throw new Error("이미 존재하는 가게 이름입니다.");
     }
+
     let regionId = null;
     const hasProvince =
       typeof data.province === "string" && data.province.trim().length > 0;
@@ -95,4 +97,20 @@ export const getRestaurantById = async (restaurantId) => {
     province: row.address?.region?.province ?? null,
     district: row.address?.region?.district ?? null,
   };
+};
+
+export const getAllRestaurantReviews = async (restaurantId, cursor) => {
+  const reviews = await prisma.review.findMany({
+    select: {
+      id: true,
+      user_id: true,
+      restaurant_id: true,
+      description: true,
+      rating: true,
+    },
+    where: { restaurant_id: restaurantId, id: { gt: cursor } },
+    orderBy: { id: "asc" },
+    take: 5, // 가장 위에서 5개의 레코드만 반환.
+  });
+  return reviews;
 };
