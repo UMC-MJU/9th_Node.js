@@ -16,7 +16,6 @@ model address {
   // 2. 역참조 필드 추가 1:1 관계 
   restaurants restaurant?  //모든 주소는 레스토랑을 가짐.
   users user? //모든 주소는 사용자를 가짐.
-
 }
 
 model region {
@@ -79,7 +78,7 @@ model restaurant {
   id           Int    @id @default(autoincrement())
   address_id   Int    @unique
   address address@relation(fields: [address_id], references: [id], onDelete: Cascade)
-  name         String @db.VarChar(100)
+  name         String  @unique @db.VarChar(100)
   point_reward Int    @default(0)
 
   reviews review[]

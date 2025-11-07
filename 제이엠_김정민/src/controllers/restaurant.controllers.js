@@ -4,7 +4,7 @@ import { addRestaurant } from "../services/restaurant.service.js";
 
 export const handleCreateRestaurant = async (req, res) => {
   try {
-    const data = bodyToRestaurant(req.params, req.body);
+    const data = bodyToRestaurant(req.body);
     const result = await addRestaurant(data);
     res.status(StatusCodes.CREATED).json({ result });
   } catch (err) {

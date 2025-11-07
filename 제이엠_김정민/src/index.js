@@ -31,8 +31,8 @@ app.post("/api/v1/users/signup", handleUserSignUp);
 // 레스토랑 리뷰 생성
 app.post("/api/v1/restaurants/:restaurantId/reviews", handleCreateReview);
 
-// 특정 지역에 가게 생성
-app.post("/api/v1/regions/:regionId/restaurants", handleCreateRestaurant);
+// 가게 생성 (URL에 regionId 불필요)
+app.post("/api/v1/restaurants", handleCreateRestaurant);
 
 // 가게에 미션 추가
 app.post(

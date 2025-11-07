@@ -14,7 +14,8 @@
     "migrate:dev": "prisma migrate dev",
     "migrate:deploy": "prisma migrate deploy",
     "migrate:reset": "prisma migrate reset --force",
-    "migrate:status": "prisma migrate status"
+    "migrate:status": "prisma migrate status",
+    "db:delete:restaurants": "node scripts/delete_restaurants.js"
   },
   "author": "",
   "license": "ISC",

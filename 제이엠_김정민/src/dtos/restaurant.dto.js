@@ -1,7 +1,9 @@
-export const bodyToRestaurant = (params, body) => {
-  const regionId = Number(params.regionId || body.regionId);
+export const bodyToRestaurant = (body) => {
+  const regionId = body.regionId != null ? Number(body.regionId) : null;
   return {
     regionId,
+    province: body.province || null,
+    district: body.district || null,
     name: body.name,
     pointReward: Number(body.pointReward ?? 0),
     detailAddress: body.detailAddress || "",
