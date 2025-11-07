@@ -10,6 +10,7 @@ import {
 import { handleCreateRestaurant } from "./controllers/restaurant.controllers.js";
 import { handleAddMissionToRestaurant } from "./controllers/mission.controllers.js";
 import { handleStartUserMission } from "./controllers/userMission.controllers.js";
+import { handleListMyReviews } from "./controllers/review.controllers.js";
 // 리뷰 목록 조회는 리뷰 컨트롤러로 이동
 
 dotenv.config();
@@ -54,6 +55,9 @@ app.get(
   "/api/v1/restaurants/:restaurantID/reviews",
   handleListRestaurantReviews
 );
+
+//특정 유저가 쓴 리뷰 조회
+app.get("/api/v1/users/:userId/reviews", handleListMyReviews);
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);

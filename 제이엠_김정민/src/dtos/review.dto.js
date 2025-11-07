@@ -30,3 +30,12 @@ export const responseFromReviews = (reviews) => {
     },
   };
 };
+
+export const responseFromMyReviews = (myReviews) => {
+  return {
+    data: myReviews,
+    pagination: {
+      cursor: myReviews.length ? myReviews[myReviews.length - 1].id : null,
+    },
+  };
+};

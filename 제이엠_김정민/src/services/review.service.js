@@ -4,6 +4,7 @@ import {
   createReview,
   getReviewById,
   getAllRestaurantReviews,
+  getAllMyReviews,
 } from "../repositories/review.repositories.js";
 
 export const addReview = async (data) => {
@@ -28,5 +29,13 @@ export const listRestaurantReviews = async (restaurantId, cursor = 0) => {
     normalizedRestaurantId,
     normalizedCursor
   );
+  return responseFromReviews(reviews);
+};
+
+export const listMyReviews = async (userId, cursor = 0) => {
+  const normalizedUserId = Number(userId);
+  const normalizedCursor = Number(cursor) || 0;
+
+  const reviews = await getAllMyReviews(normalizedUserId, normalizedCursor);
   return responseFromReviews(reviews);
 };

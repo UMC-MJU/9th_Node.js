@@ -51,3 +51,20 @@ export const getAllRestaurantReviews = async (restaurantId, cursor = 0) => {
   });
   return reviews;
 };
+
+export const getAllMyReviews = async (userId, cursor = 0) => {
+  const myReviews = await prisma.review.findMany({
+    select: {
+      id: true,
+      user: { select: { name: true } },
+      restaurant: { select: { name: true } },
+      description: true,
+      rating: true,
+      created_at: true,
+    },
+    where: { user_id: Number(userId), id: { gt: Number(cursor) } },
+    orderBy: { id: "asc" },
+    take: 5,
+  });
+  return myReviews;
+};
