@@ -1,5 +1,5 @@
 import { responseFromMission } from "../dtos/mission.dto.js";
-import { restaurantExists } from "../repositories/review.repositories.js";
+import { prisma } from "../db.config.js";
 import {
   missionExists,
   createMission,
@@ -9,7 +9,10 @@ import {
 } from "../repositories/mission.repositories.js";
 
 export const addMissionToRestaurant = async (data) => {
-  const existsRestaurant = await restaurantExists(data.restaurantId);
+  const existsRestaurant = await prisma.restaurant.findUnique({
+    where: { id: Number(data.restaurantId) },
+    select: { id: true },
+  });
   if (!existsRestaurant) {
     throw new Error("존재하지 않는 가게입니다.");
   }

@@ -79,7 +79,6 @@ model restaurant {
   address_id   Int    @unique
   address address@relation(fields: [address_id], references: [id], onDelete: Cascade)
   name         String  @unique @db.VarChar(100)
-  point_reward Int    @default(0)
 
   reviews review[]
   missions restaurant_mission_map[] // 레스토랑은 여러 미션을 가질 수 있음.
