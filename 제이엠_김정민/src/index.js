@@ -11,7 +11,10 @@ import { handleCreateRestaurant } from "./controllers/restaurant.controllers.js"
 import { handleAddMissionToRestaurant } from "./controllers/mission.controllers.js";
 import { handleStartUserMission } from "./controllers/userMission.controllers.js";
 import { handleListMyReviews } from "./controllers/review.controllers.js";
-// 리뷰 목록 조회는 리뷰 컨트롤러로 이동
+import {
+  handleListActiveUserMissions,
+  handleListCompletedUserMissions,
+} from "./controllers/userMission.controllers.js";
 
 dotenv.config();
 
@@ -58,6 +61,15 @@ app.get(
 
 //특정 유저가 쓴 리뷰 조회
 app.get("/api/v1/users/:userId/reviews", handleListMyReviews);
+
+//특정 유저가 진행중인 미션 목록 조회
+app.get("/api/v1/users/:userId/missions/active", handleListActiveUserMissions);
+
+//특정 유저가 진행완료된 미션 목록 조회
+app.get(
+  "/api/v1/users/:userId/missions/completed",
+  handleListCompletedUserMissions
+);
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);

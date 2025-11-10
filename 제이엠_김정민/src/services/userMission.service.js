@@ -9,7 +9,13 @@ import {
   isUserMissionActive,
   createUserMissionActive,
   getUserMissionById,
+  getActiveUserMissions,
+  getCompletedUserMissions,
 } from "../repositories/userMission.repositories.js";
+import {
+  responseFromActiveUserMissions,
+  responseFromCompletedUserMissions,
+} from "../dtos/userMission.dto.js";
 
 export const startUserMission = async (data) => {
   const existsRestaurant = await restaurantExists(data.restaurantId);
@@ -43,4 +49,16 @@ export const startUserMission = async (data) => {
   const insertId = await createUserMissionActive(data.userId, data.missionId);
   const row = await getUserMissionById(insertId);
   return responseFromUserMission(row);
+};
+
+// 진행중인 미션 목록 조회
+export const listActiveUserMissions = async (userId, cursor = 0) => {
+  const missions = await getActiveUserMissions(userId, cursor);
+  return responseFromActiveUserMissions(missions);
+};
+
+// 완료된 미션 목록 조회
+export const listCompletedUserMissions = async (userId, cursor = 0) => {
+  const missions = await getCompletedUserMissions(userId, cursor);
+  return responseFromCompletedUserMissions(missions);
 };
