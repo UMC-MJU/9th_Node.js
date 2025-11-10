@@ -14,6 +14,7 @@ import { handleListMyReviews } from "./controllers/review.controllers.js";
 import {
   handleListActiveUserMissions,
   handleListCompletedUserMissions,
+  handleCompleteUserMission,
 } from "./controllers/userMission.controllers.js";
 
 dotenv.config();
@@ -69,6 +70,12 @@ app.get("/api/v1/users/:userId/missions/active", handleListActiveUserMissions);
 app.get(
   "/api/v1/users/:userId/missions/completed",
   handleListCompletedUserMissions
+);
+
+// 특정 유저가 진행 중인 미션을 완료로 변경
+app.patch(
+  "/api/v1/users/:userId/missions/:missionId/complete-mission",
+  handleCompleteUserMission
 );
 
 app.listen(port, () => {

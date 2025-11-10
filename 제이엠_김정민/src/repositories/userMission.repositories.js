@@ -26,6 +26,7 @@ export const createUserMissionActive = async (userId, missionId) => {
   return created.id;
 };
 
+// 유저에게 미션 등록 시 유저가 해당 미션을 이미 진행중인지 확인
 export const getUserMissionById = async (id) => {
   return await prisma.user_mission.findUnique({
     where: { id: Number(id) },
@@ -91,4 +92,20 @@ export const getCompletedUserMissions = async (userId, cursor = 0) => {
     take: 5,
   });
   return missions;
+};
+
+// 특정 유저가 진행 중인 미션을 완료로 변경
+// src/repositories/userMission.repositories.js
+export const updateUserMission = async (userId, missionId) => {
+  const updated = await prisma.user_mission.update({
+    where: {
+      user_id_mission_id: {
+        user_id: Number(userId),
+        mission_id: Number(missionId),
+      },
+    },
+    data: { is_active: false, completed_at: new Date() },
+    select: { id: true },
+  });
+  return updated.id;
 };

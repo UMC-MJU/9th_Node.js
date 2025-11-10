@@ -4,6 +4,7 @@ import {
   startUserMission,
   listActiveUserMissions,
   listCompletedUserMissions,
+  completeUserMission,
 } from "../services/userMission.service.js";
 
 // 유저에게 미션 등록
@@ -66,6 +67,22 @@ export const handleListCompletedUserMissions = async (req, res) => {
   } catch (err) {
     return res
       .status(400)
+      .json({ message: err.message || "요청을 처리할 수 없습니다." });
+  }
+};
+
+// 특정 유저가 진행 중인 미션을 완료로 변경
+// src/controllers/userMission.controllers.js
+export const handleCompleteUserMission = async (req, res) => {
+  try {
+    const result = await completeUserMission(
+      Number(req.params.userId),
+      Number(req.params.missionId)
+    );
+    return res.status(StatusCodes.OK).json({ result });
+  } catch (err) {
+    return res
+      .status(StatusCodes.BAD_REQUEST)
       .json({ message: err.message || "요청을 처리할 수 없습니다." });
   }
 };

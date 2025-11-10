@@ -41,3 +41,11 @@ export const responseFromCompletedUserMissions = (missions) => {
     },
   };
 };
+
+// 특정 유저가 진행 중인 미션을 완료로 변경 시 응답
+export const responseFromCompleteUserMission = (mission) => {
+  if (!mission) return { message: "완료된 미션이 없습니다." };
+  return {
+    data: mission,
+  };
+};
