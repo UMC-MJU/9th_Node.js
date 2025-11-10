@@ -58,7 +58,6 @@ export const createRestaurantWithAddress = async (data) => {
       data: {
         address_id: address.id,
         name: data.name,
-        point_reward: data.pointReward || 0,
       },
       select: { id: true },
     });
@@ -76,7 +75,6 @@ export const getRestaurantById = async (restaurantId) => {
       id: true,
       address_id: true,
       name: true,
-      point_reward: true,
       address: {
         select: {
           detail_address: true,
@@ -91,7 +89,6 @@ export const getRestaurantById = async (restaurantId) => {
     id: row.id,
     address_id: row.address_id,
     name: row.name,
-    point_reward: row.point_reward,
     detail_address: row.address?.detail_address ?? null,
     region_id: row.address?.region_id ?? null,
     province: row.address?.region?.province ?? null,

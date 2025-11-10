@@ -55,3 +55,14 @@ export const addRestaurantMission = async (restaurantId, missionId) => {
     },
   });
 };
+
+export const restaurantHasMissionName = async (restaurantId, missionName) => {
+  const found = await prisma.restaurant_mission_map.findFirst({
+    where: {
+      restaurant_id: Number(restaurantId),
+      mission: { name: missionName },
+    },
+    select: { restaurant_id: true },
+  });
+  return !!found;
+};
