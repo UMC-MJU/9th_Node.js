@@ -10,6 +10,8 @@ import {
 } from "./controllers/mission.controller.js";
 import { authenticate } from "./middlewares/auth.middleware.js";
 
+// dotenv 배너 메시지 비활성화
+process.env.DOTENV_DISABLE_BANNER = "true";
 dotenv.config();
 
 const app = express();

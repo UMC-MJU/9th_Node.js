@@ -10,3 +10,18 @@ export const createReview = async (input) => {
 
   return await reviewRepo.insert(input);
 };
+
+export const getReview = async (storeId, query) => {
+  const store = await storeRepo.findById(storeId);
+  if (!store) throw { status: 404, message: "가게를 찾을 수 없습니다." };
+
+  const cursorId = query.cursorId ? Number(query.cursorId) : null;
+  const size = query.size ? Number(query.size) : 10;
+
+  if (size < 1 || size > 100) {
+    throw { status: 400, message: "size는 1~100 사이여야 합니다." };
+  }
+
+  const data = await reviewRepo.getPreviewReview(cursorId, size, storeId);
+  return { data, size };
+};
