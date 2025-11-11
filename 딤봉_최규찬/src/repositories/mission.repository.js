@@ -1,15 +1,18 @@
-import { pool } from "../db.config.js";
+import { prisma } from "../db.config.js";
 
-export const findById = async (connOrNull, id) => {
-  const exec = connOrNull ?? pool;
-  const [rows] = await exec.query("SELECT * FROM mission WHERE id = ?", [id]);
-  return rows[0];
+export const findById = async (txOrNull, id) => {
+  const db = txOrNull ?? prisma;
+  return await db.mission.findUnique({ where: { id } });
 };
 
 export const insert = async ({ storeId, title, description, reward }) => {
-  const [res] = await pool.query(
-    "INSERT INTO mission (store_id, title, description, reward) VALUES (?,?,?,?)",
-    [storeId, title, description, reward]
-  );
-  return { id: res.insertId, storeId, title, description, reward };
+  const created = await prisma.mission.create({
+    data: {
+      storeId,
+      title,
+      description: description ?? null,
+      reward,
+    },
+  });
+  return created;
 };
