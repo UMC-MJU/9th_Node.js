@@ -22,17 +22,36 @@ dotenv.config();
 const app = express();
 const port = process.env.PORT;
 
-app.use(cors()); //cors 방식 허용
-app.use(express.static("public")); //정적 파일 접근
-app.use(express.json()); //request의 본문을 json으로 해석할 수 있도록 함.
-//(JSON 형태의 요청 body를 파싱하기 위함)
-app.use(express.urlencoded({ extended: false })); //단순 객체 문자열 형태로 본문 데이터 해석
+/**
+ * 공통 응답을 사용할 수 있는 헬퍼 함수 등록
+ */
+app.use((req, res, next) => {
+  res.success = (success) => {
+    return res.json({ resultType: "SUCCESS", error: null, success });
+  };
+
+  res.error = ({ errorCode = "unknown", reason = null, data = null }) => {
+    return res.json({
+      resultType: "FAIL",
+      error: { errorCode, reason, data },
+      success: null,
+    });
+  };
+
+  next();
+});
+
+//cors 방식 허용
+app.use(cors()); //정적 파일 접근
+app.use(express.static("public"));
+//request의 본문을 json으로 해석할 수 있도록 함.(JSON 형태의 요청 body를 파싱하기 위함)
+app.use(express.json());
+//단순 객체 문자열 형태로 본문 데이터 해석 (form-data 형태의 요청 body를 파싱하기 위함)
+app.use(express.urlencoded({ extended: false }));
 
 app.get("/", (req, res) => {
   res.send("Hello World!");
 });
-
-// 정해진 URL로 POST요청을 보내면 함수가 실행됨.
 
 //회원가입 요청 처리
 app.post("/api/v1/users/signup", handleUserSignUp);
@@ -48,7 +67,6 @@ app.post(
   "/api/v1/restaurants/:restaurantId/missions",
   handleAddMissionToRestaurant
 );
-
 // 유저가 가게의 특정 미션 도전 시작
 app.post(
   "/api/v1/restaurants/:restaurantId/missions/:missionId/user-missions",
@@ -59,24 +77,35 @@ app.get(
   "/api/v1/restaurants/:restaurantID/reviews",
   handleListRestaurantReviews
 );
-
 //특정 유저가 쓴 리뷰 조회
 app.get("/api/v1/users/:userId/reviews", handleListMyReviews);
-
 //특정 유저가 진행중인 미션 목록 조회
 app.get("/api/v1/users/:userId/missions/active", handleListActiveUserMissions);
-
 //특정 유저가 진행완료된 미션 목록 조회
 app.get(
   "/api/v1/users/:userId/missions/completed",
   handleListCompletedUserMissions
 );
-
 // 특정 유저가 진행 중인 미션을 완료로 변경
 app.patch(
   "/api/v1/users/:userId/missions/:missionId/complete-mission",
   handleCompleteUserMission
 );
+
+/**
+ * 전역 오류를 처리하기 위한 미들웨어
+ */
+app.use((err, req, res, next) => {
+  if (res.headersSent) {
+    return next(err);
+  }
+
+  res.status(err.statusCode || 500).error({
+    errorCode: err.errorCode || "unknown",
+    reason: err.reason || err.message || null,
+    data: err.data || null,
+  });
+});
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
