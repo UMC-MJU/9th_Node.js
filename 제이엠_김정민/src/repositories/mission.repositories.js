@@ -1,70 +1,68 @@
-import { pool } from "../db.config.js";
+import { prisma } from "../db.config.js";
 
 export const missionExists = async (missionId) => {
-  const conn = await pool.getConnection();
-  try {
-    const [rows] = await conn.query(
-      `SELECT 1 FROM mission WHERE id = ? LIMIT 1;`,
-      [missionId]
-    );
-    return rows.length > 0;
-  } finally {
-    conn.release();
-  }
+  const found = await prisma.mission.findUnique({
+    where: { id: Number(missionId) },
+    select: { id: true },
+  });
+  return !!found;
 };
 
 export const getMissionById = async (missionId) => {
-  const conn = await pool.getConnection();
-  try {
-    const [rows] = await conn.query(
-      `SELECT id, name, description, is_active, point_reward FROM mission WHERE id = ?;`,
-      [missionId]
-    );
-    return rows.length ? rows[0] : null;
-  } finally {
-    conn.release();
-  }
+  return await prisma.mission.findUnique({
+    where: { id: Number(missionId) },
+    select: {
+      id: true,
+      name: true,
+      description: true,
+      is_active: true,
+      point_reward: true,
+    },
+  });
 };
 
 export const createMission = async (data) => {
-  const conn = await pool.getConnection();
-  try {
-    const [result] = await conn.query(
-      `INSERT INTO mission (name, description, is_active, point_reward) VALUES (?, ?, ?, ?);`,
-      [
-        data.name,
-        data.description,
-        data.isActive ? 1 : 0,
-        data.pointReward ?? 0,
-      ]
-    );
-    return result.insertId;
-  } finally {
-    conn.release();
-  }
+  const created = await prisma.mission.create({
+    data: {
+      name: data.name,
+      description: data.description ?? null,
+      is_active: data.isActive ?? true,
+      point_reward: data.pointReward ?? 0,
+    },
+    select: { id: true },
+  });
+  return created.id;
 };
 
 export const restaurantMissionExists = async (restaurantId, missionId) => {
-  const conn = await pool.getConnection();
-  try {
-    const [rows] = await conn.query(
-      `SELECT 1 FROM restaurant_mission_map WHERE restaurant_id = ? AND mission_id = ? LIMIT 1;`,
-      [restaurantId, missionId]
-    );
-    return rows.length > 0;
-  } finally {
-    conn.release();
-  }
+  const found = await prisma.restaurant_mission_map.findUnique({
+    where: {
+      restaurant_id_mission_id: {
+        restaurant_id: Number(restaurantId),
+        mission_id: Number(missionId),
+      },
+    },
+    select: { mission_id: true },
+  });
+  return !!found;
 };
 
 export const addRestaurantMission = async (restaurantId, missionId) => {
-  const conn = await pool.getConnection();
-  try {
-    await conn.query(
-      `INSERT INTO restaurant_mission_map (restaurant_id, mission_id) VALUES (?, ?);`,
-      [restaurantId, missionId]
-    );
-  } finally {
-    conn.release();
-  }
+  await prisma.restaurant_mission_map.create({
+    data: {
+      restaurant_id: Number(restaurantId),
+      mission_id: Number(missionId),
+    },
+  });
+};
+
+export const restaurantHasMissionName = async (restaurantId, missionName) => {
+  const found = await prisma.restaurant_mission_map.findFirst({
+    where: {
+      restaurant_id: Number(restaurantId),
+      mission: { name: missionName },
+    },
+    select: { restaurant_id: true },
+  });
+  return !!found;
 };

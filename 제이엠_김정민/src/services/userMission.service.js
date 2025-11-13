@@ -1,4 +1,7 @@
-import { responseFromUserMission } from "../dtos/userMission.dto.js";
+import {
+  responseFromUserMission,
+  responseFromCompleteUserMission,
+} from "../dtos/userMission.dto.js";
 import { restaurantExists } from "../repositories/review.repositories.js";
 import {
   missionExists,
@@ -9,7 +12,14 @@ import {
   isUserMissionActive,
   createUserMissionActive,
   getUserMissionById,
+  getActiveUserMissions,
+  getCompletedUserMissions,
+  updateUserMission,
 } from "../repositories/userMission.repositories.js";
+import {
+  responseFromActiveUserMissions,
+  responseFromCompletedUserMissions,
+} from "../dtos/userMission.dto.js";
 
 export const startUserMission = async (data) => {
   const existsRestaurant = await restaurantExists(data.restaurantId);
@@ -43,4 +53,27 @@ export const startUserMission = async (data) => {
   const insertId = await createUserMissionActive(data.userId, data.missionId);
   const row = await getUserMissionById(insertId);
   return responseFromUserMission(row);
+};
+
+// 진행중인 미션 목록 조회
+export const listActiveUserMissions = async (userId, cursor = 0) => {
+  const missions = await getActiveUserMissions(userId, cursor);
+  return responseFromActiveUserMissions(missions);
+};
+
+// 완료된 미션 목록 조회
+export const listCompletedUserMissions = async (userId, cursor = 0) => {
+  const missions = await getCompletedUserMissions(userId, cursor);
+  return responseFromCompletedUserMissions(missions);
+};
+
+// 특정 유저가 진행 중인 미션을 완료로 변경
+export const completeUserMission = async (userId, missionId) => {
+  const active = await isUserMissionActive(userId, missionId);
+  if (!active) {
+    throw new Error("해당 미션은 진행중이 아닙니다.");
+  }
+  const updatedId = await updateUserMission(userId, missionId);
+  const row = await getUserMissionById(updatedId);
+  return responseFromCompleteUserMission(row);
 };

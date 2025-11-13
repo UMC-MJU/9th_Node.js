@@ -21,3 +21,21 @@ export const responseFromReview = (row) => {
     createdAt: row.created_at ? new Date(row.created_at).toISOString() : null,
   };
 };
+
+export const responseFromReviews = (reviews) => {
+  return {
+    data: reviews,
+    pagination: {
+      cursor: reviews.length ? reviews[reviews.length - 1].id : null,
+    },
+  };
+};
+
+export const responseFromMyReviews = (myReviews) => {
+  return {
+    data: myReviews,
+    pagination: {
+      cursor: myReviews.length ? myReviews[myReviews.length - 1].id : null,
+    },
+  };
+};

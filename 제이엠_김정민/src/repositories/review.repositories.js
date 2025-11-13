@@ -1,41 +1,70 @@
-import { pool } from "../db.config.js";
+import { prisma } from "../db.config.js";
 
 export const restaurantExists = async (restaurantId) => {
-  const conn = await pool.getConnection();
-  try {
-    const [rows] = await conn.query(
-      `SELECT 1 FROM restaurant WHERE id = ? LIMIT 1;`,
-      [restaurantId]
-    );
-    return rows.length > 0;
-  } finally {
-    conn.release();
-  }
+  const found = await prisma.restaurant.findUnique({
+    where: { id: Number(restaurantId) },
+    select: { id: true },
+  });
+  return !!found;
 };
 
 export const createReview = async (data) => {
-  const conn = await pool.getConnection();
-  try {
-    const { userId, restaurantId, description, rating } = data;
-    const [result] = await conn.query(
-      `INSERT INTO review (user_id, restaurant_id, description, rating) VALUES (?, ?, ?, ?);`,
-      [userId, restaurantId, description, rating]
-    );
-    return result.insertId;
-  } finally {
-    conn.release();
-  }
+  const { userId, restaurantId, description, rating } = data;
+  const created = await prisma.review.create({
+    data: {
+      user_id: Number(userId),
+      restaurant_id: Number(restaurantId),
+      description,
+      rating,
+    },
+    select: { id: true },
+  });
+  return created.id;
 };
 
 export const getReviewById = async (reviewId) => {
-  const conn = await pool.getConnection();
-  try {
-    const [rows] = await conn.query(
-      `SELECT id, user_id, restaurant_id, description, created_at, rating FROM review WHERE id = ?;`,
-      [reviewId]
-    );
-    return rows.length ? rows[0] : null;
-  } finally {
-    conn.release();
-  }
+  return await prisma.review.findUnique({
+    where: { id: Number(reviewId) },
+    select: {
+      id: true,
+      user_id: true,
+      restaurant_id: true,
+      description: true,
+      created_at: true,
+      rating: true,
+    },
+  });
+};
+
+export const getAllRestaurantReviews = async (restaurantId, cursor = 0) => {
+  const reviews = await prisma.review.findMany({
+    select: {
+      id: true,
+      user_id: true,
+      restaurant_id: true,
+      description: true,
+      rating: true,
+    },
+    where: { restaurant_id: Number(restaurantId), id: { gt: Number(cursor) } },
+    orderBy: { id: "asc" },
+    take: 5,
+  });
+  return reviews;
+};
+
+export const getAllMyReviews = async (userId, cursor = 0) => {
+  const myReviews = await prisma.review.findMany({
+    select: {
+      id: true,
+      user: { select: { name: true } },
+      restaurant: { select: { name: true } },
+      description: true,
+      rating: true,
+      created_at: true,
+    },
+    where: { user_id: Number(userId), id: { gt: Number(cursor) } },
+    orderBy: { id: "asc" },
+    take: 5,
+  });
+  return myReviews;
 };

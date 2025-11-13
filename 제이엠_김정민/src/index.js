@@ -3,10 +3,19 @@ import dotenv from "dotenv";
 import express from "express"; // -> ES Module
 import cors from "cors";
 import { handleUserSignUp } from "./controllers/user.controllers.js";
-import { handleCreateReview } from "./controllers/review.controllers.js";
+import {
+  handleCreateReview,
+  handleListRestaurantReviews,
+} from "./controllers/review.controllers.js";
 import { handleCreateRestaurant } from "./controllers/restaurant.controllers.js";
 import { handleAddMissionToRestaurant } from "./controllers/mission.controllers.js";
 import { handleStartUserMission } from "./controllers/userMission.controllers.js";
+import { handleListMyReviews } from "./controllers/review.controllers.js";
+import {
+  handleListActiveUserMissions,
+  handleListCompletedUserMissions,
+  handleCompleteUserMission,
+} from "./controllers/userMission.controllers.js";
 
 dotenv.config();
 
@@ -31,8 +40,8 @@ app.post("/api/v1/users/signup", handleUserSignUp);
 // 레스토랑 리뷰 생성
 app.post("/api/v1/restaurants/:restaurantId/reviews", handleCreateReview);
 
-// 특정 지역에 가게 생성
-app.post("/api/v1/regions/:regionId/restaurants", handleCreateRestaurant);
+// 가게 생성 (URL에 regionId 불필요)
+app.post("/api/v1/restaurants", handleCreateRestaurant);
 
 // 가게에 미션 추가
 app.post(
@@ -44,6 +53,29 @@ app.post(
 app.post(
   "/api/v1/restaurants/:restaurantId/missions/:missionId/user-missions",
   handleStartUserMission
+);
+// 가게에 속한 모든 리뷰 조회
+app.get(
+  "/api/v1/restaurants/:restaurantID/reviews",
+  handleListRestaurantReviews
+);
+
+//특정 유저가 쓴 리뷰 조회
+app.get("/api/v1/users/:userId/reviews", handleListMyReviews);
+
+//특정 유저가 진행중인 미션 목록 조회
+app.get("/api/v1/users/:userId/missions/active", handleListActiveUserMissions);
+
+//특정 유저가 진행완료된 미션 목록 조회
+app.get(
+  "/api/v1/users/:userId/missions/completed",
+  handleListCompletedUserMissions
+);
+
+// 특정 유저가 진행 중인 미션을 완료로 변경
+app.patch(
+  "/api/v1/users/:userId/missions/:missionId/complete-mission",
+  handleCompleteUserMission
 );
 
 app.listen(port, () => {

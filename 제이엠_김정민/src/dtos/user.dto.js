@@ -37,9 +37,25 @@ export const responseFromUser = (data) => {
   // getUser 결과는 배열이므로, 실제 사용자 객체는 첫 번째 요소입니다.
   const singleUser = user && user[0] ? user[0] : {};
 
-  // 1. DB에서 조회된 카테고리 객체 배열에서 'name' 필드만 추출하여 클라이언트용 배열로 변환합니다.
+  // 1. 선호 카테고리 이름 배열로 변환
+  // - Prisma include 사용 시: favoriteFood.food_category.food_type
+  // - 평평한 형태로 반환 시: favoriteFood.name 또는 favoriteFood.food_type
   const favoriteFoodCategoriesNames = (favoriteFoods || [])
-    .map((food) => food.name) // food.name 필드는 레포지토리의 JOIN 쿼리 결과입니다.
+    .map((favoriteFood) => {
+      if (!favoriteFood) return null;
+      // nested include 형태
+      if (
+        favoriteFood.food_category &&
+        typeof favoriteFood.food_category.food_type === "string"
+      ) {
+        return favoriteFood.food_category.food_type;
+      }
+      // 평평한 형태 지원
+      if (typeof favoriteFood.name === "string") return favoriteFood.name;
+      if (typeof favoriteFood.food_type === "string")
+        return favoriteFood.food_type;
+      return null;
+    })
     .filter((name) => name);
 
   // 2. DB 스네이크 케이스 필드를 카멜 케이스로 변환하고 날짜 형식을 처리합니다.
