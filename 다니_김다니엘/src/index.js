@@ -39,10 +39,10 @@ app.get("/", (req, res) => {
 });
 
 app.post("/api/v1/users/signup", handleUserSignUp);
-app.post("/api/v1/regions/:regionID/restaurants", handleRestaurantSignUp);
-app.post("/api/v1/restaurants/review", handleReviewSignUp);
-app.post("/api/v1/restaurants/:restaurantId/missions/:missionId/user-missions", handleUserMissionSignUp);
-app.post("/api/v1/restaurants/:restaurantID/missions", handleMissionSignUp);
+// app.post("/api/v1/regions/:regionID/restaurants", handleRestaurantSignUp);
+// app.post("/api/v1/restaurants/review", handleReviewSignUp);
+// app.post("/api/v1/restaurants/:restaurantId/missions/:missionId/user-missions", handleUserMissionSignUp);
+// app.post("/api/v1/restaurants/:restaurantID/missions", handleMissionSignUp);
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);

@@ -31,3 +31,4 @@ export const handleReviewSignUp = async (req, res, next) => {
         res.status(StatusCodes.BAD_REQUEST).json({ error: err.message });
     }
 };
+

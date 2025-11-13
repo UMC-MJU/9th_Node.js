@@ -1,4 +1,3 @@
-import { pool } from "../db.config.js";
 
 // region 존재 여부 확인
 export const getRegion = async (regionId) => {

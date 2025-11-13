@@ -1,4 +1,4 @@
-import { pool } from "../db.config.js";
+
 
 // 사용자 미션 도전 추가
 export const addUserMission = async (data) => {

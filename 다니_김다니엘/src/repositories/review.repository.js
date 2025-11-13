@@ -1,4 +1,4 @@
-import { pool } from "../db.config.js";
+
 
 // 리뷰 추가
 export const addReview = async (data) => {
