@@ -10,6 +10,30 @@ export class DuplicateUserEmailError extends Error {
   }
 }
 
+// 이미 존재하는 가게 이름 에러
+export class DuplicateRestaurantNameError extends Error {
+  errorCode = "DUPLICATE_RESTAURANT_NAME";
+  statusCode = 400;
+
+  constructor(reason, data) {
+    super(reason);
+    this.reason = reason;
+    this.data = data;
+  }
+}
+
+// 가게 필수 필드가 누락될 경우 에러
+export class RestaurantRequiredFieldsError extends Error {
+  errorCode = "REQUIRED_RESTAURANT_FIELDS";
+  statusCode = 400;
+
+  constructor(reason, data) {
+    super(reason);
+    this.reason = reason;
+    this.data = data;
+  }
+}
+
 // 존재하지 않는 가게 에러
 export class RestaurantNotFoundError extends Error {
   errorCode = "NOT_FOUND_RESTAURANT";
