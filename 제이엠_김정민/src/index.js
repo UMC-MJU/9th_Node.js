@@ -97,9 +97,9 @@ app.patch(
  */
 app.use((err, req, res, next) => {
   if (res.headersSent) {
-    return next(err);
+    return next(err); //⬅️ 이미 응답이 시작되었으므로 Express 기본 에러 핸들러에게 위임
   }
-
+  // 에러코드를 안넣어주면 무조건 500 에러 코드 반환
   res.status(err.statusCode || 500).error({
     errorCode: err.errorCode || "unknown",
     reason: err.reason || err.message || null,

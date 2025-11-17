@@ -6,7 +6,7 @@ import {
   getUserFavoriteFoodsByUserId,
   setFavoriteFood,
 } from "../repositories/user.repositories.js";
-import { DuplicateUserEmailError } from "../error/emailError.js";
+import { DuplicateUserEmailError } from "../error/Error.js";
 
 export const userSignUp = async (data) => {
   // 비밀번호 해싱

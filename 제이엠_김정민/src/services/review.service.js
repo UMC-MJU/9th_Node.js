@@ -6,6 +6,7 @@ import {
   getAllRestaurantReviews,
   getAllMyReviews,
 } from "../repositories/review.repositories.js";
+import { RestaurantNotFoundError } from "../error/Error.js";
 
 export const addReview = async (data) => {
   const exists = await prisma.restaurant.findUnique({
@@ -13,7 +14,11 @@ export const addReview = async (data) => {
     select: { id: true },
   });
   if (!exists) {
-    throw new Error("존재하지 않는 가게입니다.");
+    // throw new Error("존재하지 않는 가게입니다.");
+    throw new RestaurantNotFoundError(
+      "존재하지 않는 가게입니다.",
+      data.restaurantId
+    );
   }
 
   const insertedId = await createReview(data);

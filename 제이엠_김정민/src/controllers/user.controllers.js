@@ -17,8 +17,7 @@ export const handleUserSignUp = async (req, res, next) => {
   //     .status(StatusCodes.BAD_REQUEST)
   //     .json({ message: err.message || "요청을 처리할 수 없습니다." });
   // }
-
   const user = await userSignUp(bodyToUser(req.body));
-
   res.status(StatusCodes.OK).success(user);
+  // Express5 + 전역 에러 핸들러가있으므로 try/catch 필요없음
 };
