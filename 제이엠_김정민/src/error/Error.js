@@ -105,3 +105,38 @@ export class MissionRequiredFieldsError extends Error {
     this.data = data;
   }
 }
+// 미션이 가게에 등록되지 않은 경우 에러
+export class MissionNotRegisteredError extends Error {
+  errorCode = "MISSION_NOT_REGISTERED";
+  statusCode = 400;
+
+  constructor(reason, data) {
+    super(reason);
+    this.reason = reason;
+    this.data = data;
+  }
+}
+
+// 이미 완료된 미션 에러
+export class UserMissionAlreadyCompletedError extends Error {
+  errorCode = "USER_MISSION_ALREADY_COMPLETED";
+  statusCode = 400;
+
+  constructor(reason, data) {
+    super(reason);
+    this.reason = reason;
+    this.data = data;
+  }
+}
+
+// 진행중인 미션이 없을 경우 에러
+export class UserMissionNotFoundError extends Error {
+  errorCode = "USER_MISSION_NOT_FOUND";
+  statusCode = 404;
+
+  constructor(reason, data) {
+    super(reason);
+    this.reason = reason;
+    this.data = data;
+  }
+}

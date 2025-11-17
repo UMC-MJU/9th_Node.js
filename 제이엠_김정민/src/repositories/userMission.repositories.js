@@ -109,3 +109,16 @@ export const updateUserMission = async (userId, missionId) => {
   });
   return updated.id;
 };
+
+// 유저에게 미션 등록 시 유저가 해당 미션을 이미 완료된 미션인지 확인
+export const isUserMissionCompleted = async (userId, missionId) => {
+  const found = await prisma.user_mission.findFirst({
+    where: {
+      user_id: Number(userId),
+      mission_id: Number(missionId),
+      is_active: false,
+    },
+    select: { id: true },
+  });
+  return !!found;
+};
