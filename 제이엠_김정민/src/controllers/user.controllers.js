@@ -5,7 +5,8 @@ import { userSignUp } from "../services/user.service.js";
 export const handleUserSignUp = async (req, res, next) => {
   //next => 에러를 전역 에러 핸들러로 위임할 때 사용. next(err) 형태로 사용가능
   console.log("회원가입을 요청했습니다!");
-  console.log("body:", req.body); // 값이 잘 들어오나 확인하기 위한 테스트용
+  // 값이 잘 들어오나 확인하기 위한 테스트용
+  console.log("body:", req.body);
 
   // try {
   //   const user = await userSignUp(bodyToUser(req.body));
