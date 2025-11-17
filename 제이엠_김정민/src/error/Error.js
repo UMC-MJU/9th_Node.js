@@ -33,3 +33,51 @@ export class UserNotFoundError extends Error {
     this.data = data;
   }
 }
+
+// 미션이 존재하지 않을 경우 에러
+export class MissionNotFoundError extends Error {
+  errorCode = "NOT_FOUND_MISSION";
+  statusCode = 404;
+
+  constructor(reason, data) {
+    super(reason);
+    this.reason = reason;
+    this.data = data;
+  }
+}
+
+// 미션 이름이 중복될 경우 에러
+export class MissionNameDuplicatedError extends Error {
+  errorCode = "DUPLICATE_MISSION_NAME";
+  statusCode = 400;
+
+  constructor(reason, data) {
+    super(reason);
+    this.reason = reason;
+    this.data = data;
+  }
+}
+
+// 미션이 이미 등록되어 있을 경우 에러
+export class MissionAlreadyExistsError extends Error {
+  errorCode = "MISSION_ALREADY_EXISTS";
+  statusCode = 400;
+
+  constructor(reason, data) {
+    super(reason);
+    this.reason = reason;
+    this.data = data;
+  }
+}
+
+// 미션 필수 필드가 누락될 경우 에러
+export class MissionRequiredFieldsError extends Error {
+  errorCode = "REQUIRED_MISSION_FIELDS";
+  statusCode = 400;
+
+  constructor(reason, data) {
+    super(reason);
+    this.reason = reason;
+    this.data = data;
+  }
+}
