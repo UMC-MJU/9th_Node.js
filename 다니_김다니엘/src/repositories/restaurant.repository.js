@@ -1,60 +1,49 @@
-
+import { prisma } from "../db.config.js";
 // region 존재 여부 확인
 export const getRegion = async (regionId) => {
-    const conn = await pool.getConnection();
-    try {
-        const [result] = await conn.query(
-            `SELECT * FROM region WHERE id = ?;`,
-            [regionId]
-        );
-        if (result.length == 0) {
-            return null;
-        }
-        return result[0];
-    } catch (err) {
-        throw new Error(
-            `오류가 발생했어요. 요청 파라미터를 확인해주세요. (${err})`
-        );
-    } finally {
-        conn.release();
-    }
+   const region = await prisma.region.findFirstOrThrow({ where: { id: regionId } });
+   return region
 };
 
 // 1. addRestaurant 함수 수정 - pool.query() 대신 conn.query() 사용
 export const addRestaurant = async (data) => {
-    const conn = await pool.getConnection();
-    try {
-        const [result] = await conn.query(  // pool.query → conn.query
-            `INSERT INTO restaurant (name, address, cuisine_type, region_id) VALUES (?, ?, ?, ?);`,
-            [data.name, data.address, data.cuisineType, data.regionId]
-        );
-        return result.insertId;
-    } catch (err) {
-        throw new Error(
-            `오류가 발생했어요. 요청 파라미터를 확인해주세요. (${err.message})`
-        );
-    } finally {
-        conn.release();
-    }
+    const restaurant = await prisma.restaurant.create({ data: data });
+    return restaurant.id
 };
 
 // 2. getRestaurant 함수 수정 - result 구조 확인 및 예외 처리
 export const getRestaurant = async (restaurantId) => {
-    const conn = await pool.getConnection();
-    try {
-        const [result] = await conn.query(  // pool.query → conn.query
-            `SELECT * FROM restaurant WHERE id = ?;`,
-            [restaurantId]
-        );
-        if (result.length == 0) {
-            return null;
-        }
-        return result[0];
-    } catch (err) {
-        throw new Error(
-            `오류가 발생했어요. 요청 파라미터를 확인해주세요. (${err})`
-        );
-    } finally {
-        conn.release();
-    }
+    const restaurant = await prisma.restaurant.findFirstOrThrow({ where: { id: restaurantId } });
+    return restaurant
 };
+
+export const getAllRestaurantReviews = async (restaurantId,cursor=0) => {
+    const reviews = await prisma.review.findMany({
+        select:{
+            id : true,
+            content : true,
+            userId : true,
+            restaurantId : true,
+        },
+        where:{restaurantId : restaurantId,id:{gt:cursor}},
+        orderBy:{id : "asc"},
+        take : 5,
+    })
+    return reviews
+}
+
+export const getAllRestaurantMissions = async (restaurantId,cursor=0) => {
+    const missions = await prisma.mission.findMany({
+        select:{
+            id : true,
+            name : true,
+            content : true,
+            isActive : true,
+            reward : true,
+        },
+        where:{restaurantId : restaurantId,id:{gt:cursor}},
+        orderBy:{id : "asc"},
+        take : 5,
+    })
+    return missions
+}

@@ -1,10 +1,12 @@
 import bcrypt from "bcryptjs";
-import { bodyToUser} from "../dtos/user.dto.js";
+import { bodyToUser, responseFromUserReviews } from "../dtos/user.dto.js";
+import { DuplicateUserEmailError } from "../errors/error.js";
 import {
   addUser,
   getUser,
   getUserPreferencesByUserId,
   setPreference,
+  getAllUserReviews,
 } from "../repositories/user.repository.js";
 
 export const userSignUp = async (data) => {
@@ -23,7 +25,7 @@ export const userSignUp = async (data) => {
   });
 
   if (joinUserId === null) {
-    throw new Error("이미 존재하는 이메일입니다.");
+    throw new DuplicateUserEmailError("이미 존재하는 이메일입니다.",data);
   }
 
   for (const preference of data.preferences) {
@@ -39,9 +41,15 @@ export const userSignUp = async (data) => {
     gender: user.gender,
     birth: user.birth,
     address: user.address || "",
-    detailAddress: user.detail_address || "",
-    phoneNumber: user.phone_number,
+    detailAddress: user.detailAddress || "",
+    phoneNumber: user.phoneNumber,
     preferences: preferences,
     // 비밀번호는 보안상 응답에 포함하지 않음
   };
 };
+
+export const listUserReviews = async (userId,cursor=0) => {
+  const reviews = await getAllUserReviews(userId,cursor)
+  console.log(reviews)
+  return responseFromUserReviews(reviews)
+}
