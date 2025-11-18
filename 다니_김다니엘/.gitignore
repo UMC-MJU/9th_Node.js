@@ -3,3 +3,4 @@ node_modules
 .vscode
 create_file.bat
 /src/generated/prisma
+test-password.js
