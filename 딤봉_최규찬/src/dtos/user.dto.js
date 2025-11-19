@@ -14,21 +14,15 @@ export const bodyToUser = (body) => {
     };
   };
 
-export const responseFromUser = ({ user, preferences }) => {
-  return {
-    id: user[0].id,
-    email: user[0].email,
-    name: user[0].name,
-    gender: user[0].gender,
-    birth: user[0].birth,
-    address: user[0].address,
-    detailAddress: user[0].detail_address,
-    phoneNumber: user[0].phone_number,
-    preferences: preferences.map(pref => ({
-      id: pref.id,
-      foodCategoryId: pref.food_category_id,
-      name: pref.name
-    }))
+  export const responseFromUser = ({ user, preferences }) => {
+    const preferFoods = preferences.map(
+      (preference) => preference.foodCategory.name
+    );
+  
+    return {
+      email: user.email,
+      name: user.name,
+      preferCategory: preferFoods,
+    };
   };
-};
 
