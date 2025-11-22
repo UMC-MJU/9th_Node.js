@@ -1,4 +1,8 @@
 import { prisma } from "../db.config.js";
+import {
+  DuplicateRestaurantNameError,
+  RestaurantRequiredFieldsError,
+} from "../error/Error.js";
 
 export const createRestaurantWithAddress = async (data) => {
   // province/district가 있으면 해당 region을 upsert, 없으면 regionId 사용
@@ -9,7 +13,11 @@ export const createRestaurantWithAddress = async (data) => {
       select: { id: true },
     });
     if (dup) {
-      throw new Error("이미 존재하는 가게 이름입니다.");
+      // throw new Error("이미 존재하는 가게 이름입니다.");
+      throw new DuplicateRestaurantNameError(
+        "이미 존재하는 가게 이름입니다.",
+        data.name
+      );
     }
 
     let regionId = null;
@@ -43,7 +51,11 @@ export const createRestaurantWithAddress = async (data) => {
       }
       regionId = found.id;
     } else {
-      throw new Error("regionId 또는 province/district가 필요합니다.");
+      // throw new Error("regionId 또는 province/district가 필요합니다.");
+      throw new RestaurantRequiredFieldsError(
+        "regionId 또는 province/district가 필요합니다.",
+        data.name
+      );
     }
 
     const address = await tx.address.create({
