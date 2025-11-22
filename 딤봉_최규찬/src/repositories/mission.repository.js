@@ -5,6 +5,13 @@ export const findById = async (txOrNull, id) => {
   return await db.mission.findUnique({ where: { id } });
 };
 
+export const findByStoreId = async (storeId) => {
+  return prisma.mission.findMany({
+    where: { storeId: Number(storeId) },
+    orderBy: { id: "desc" },
+  });
+};
+
 export const insert = async ({ storeId, title, description, reward }) => {
   const created = await prisma.mission.create({
     data: {

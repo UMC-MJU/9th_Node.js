@@ -4,10 +4,8 @@ import { userSignUp } from "../services/user.service.js";
 import { signToken } from "../utils/jwt.js";
 
 export const handleUserSignUp = async (req, res, next) => {
-  console.log("회원가입을 요청했습니다!");
-  console.log("body:", req.body); // 값이 잘 들어오나 확인하기 위한 테스트용
-
   const user = await userSignUp(bodyToUser(req.body));
   const token = signToken({ userId: user.id });
-  res.status(StatusCodes.OK).json({ result: user, token });
+
+  res.status(StatusCodes.OK).success({ ...user, token });
 };
