@@ -5,6 +5,75 @@ import { restaurantSignUp, listRestaurantReviews,listRestaurantMissions} from ".
 export const handleRestaurantSignUp = async (req, res, next) => {
     const restaurantData = bodyToRestaurant(req.body)
     const result = await restaurantSignUp(parseInt(req.params.regionID), restaurantData)
+    /*
+    #swagger.summary = '레스토랑 추가 API';
+    #swagger.parameters['regionID'] = {
+      in: 'path',
+      required: true,
+      type: 'integer',
+      description: '지역 ID'
+    };
+    #swagger.requestBody = {
+      required: true,
+      content: {
+        "application/json": {
+          schema: {
+            type: "object",
+            properties: {
+              name: { type: "string" },
+              address: { type: "string" },
+              cuisineType: { type: "string" }
+            }
+          }
+        }
+      }
+    };
+    #swagger.responses[200] = {
+      description: "레스토랑 추가 성공 응답",
+      content: {
+        "application/json": {
+          schema: {
+            type: "object",
+            properties: {
+              resultType: { type: "string", example: "SUCCESS" },
+              error: { type: "object", nullable: true, example: null },
+              success: {
+                type: "object",
+                properties: {
+                  id: { type: "number" },
+                  name: { type: "string" },
+                  address: { type: "string" },
+                  cuisineType: { type: "string" }
+                }
+              }
+            }
+          }
+        }
+      }
+    };
+    #swagger.responses[400] = {
+      description: "레스토랑 추가 실패 응답",
+      content: {
+        "application/json": {
+          schema: {
+            type: "object",
+            properties: {
+              resultType: { type: "string", example: "FAIL" },
+              error: {
+                type: "object",
+                properties: {
+                  errorCode: { type: "string", example: "R001" },
+                  reason: { type: "string" },
+                  data: { type: "object" }
+                }
+              },
+              success: { type: "object", nullable: true, example: null }
+            }
+          }
+        }
+      }
+    };
+    */
     res.status(StatusCodes.OK).success(result)
     // try {
     //     console.log("레스토랑 추가를 요청했습니다!");
@@ -39,6 +108,80 @@ export const handleListRestaurantReviews = async (req, res, next) => {
         parseInt(req.params.restaurantId),
         typeof req.query.cursor === "string" ? parseInt(req.query.cursor) : 0
     );
+    /*
+    #swagger.summary = '레스토랑 리뷰 목록 조회 API';
+    #swagger.parameters['restaurantId'] = {
+      in: 'path',
+      required: true,
+      type: 'integer',
+      description: '레스토랑 ID'
+    };
+    #swagger.parameters['cursor'] = {
+      in: 'query',
+      required: false,
+      type: 'integer',
+      description: '페이지네이션 커서'
+    };
+    #swagger.responses[200] = {
+      description: "레스토랑 리뷰 목록 조회 성공 응답",
+      content: {
+        "application/json": {
+          schema: {
+            type: "object",
+            properties: {
+              resultType: { type: "string", example: "SUCCESS" },
+              error: { type: "object", nullable: true, example: null },
+              success: {
+                type: "object",
+                properties: {
+                  data: {
+                    type: "array",
+                    items: {
+                      type: "object",
+                      properties: {
+                        id: { type: "number" },
+                        rating: { type: "number" },
+                        content: { type: "string" },
+                        userId: { type: "number" }
+                      }
+                    }
+                  },
+                  pagination: {
+                    type: "object",
+                    properties: {
+                      cursor: { type: "number", nullable: true }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    };
+    #swagger.responses[400] = {
+      description: "레스토랑 리뷰 목록 조회 실패 응답",
+      content: {
+        "application/json": {
+          schema: {
+            type: "object",
+            properties: {
+              resultType: { type: "string", example: "FAIL" },
+              error: {
+                type: "object",
+                properties: {
+                  errorCode: { type: "string", example: "R002" },
+                  reason: { type: "string" },
+                  data: { type: "object" }
+                }
+              },
+              success: { type: "object", nullable: true, example: null }
+            }
+          }
+        }
+      }
+    };
+    */
     res.status(StatusCodes.OK).success(result);
     // try {
     //     const reviews = await listRestaurantReviews(
@@ -56,6 +199,81 @@ export const handleListRestaurantMissions = async (req, res, next) => {
         parseInt(req.params.restaurantId),
         typeof req.query.cursor === "string" ? parseInt(req.query.cursor) : 0
     );
+    /*
+    #swagger.summary = '레스토랑 미션 목록 조회 API';
+    #swagger.parameters['restaurantId'] = {
+      in: 'path',
+      required: true,
+      type: 'integer',
+      description: '레스토랑 ID'
+    };
+    #swagger.parameters['cursor'] = {
+      in: 'query',
+      required: false,
+      type: 'integer',
+      description: '페이지네이션 커서'
+    };
+    #swagger.responses[200] = {
+      description: "레스토랑 미션 목록 조회 성공 응답",
+      content: {
+        "application/json": {
+          schema: {
+            type: "object",
+            properties: {
+              resultType: { type: "string", example: "SUCCESS" },
+              error: { type: "object", nullable: true, example: null },
+              success: {
+                type: "object",
+                properties: {
+                  data: {
+                    type: "array",
+                    items: {
+                      type: "object",
+                      properties: {
+                        id: { type: "number" },
+                        name: { type: "string" },
+                        content: { type: "string" },
+                        isActive: { type: "boolean" },
+                        reward: { type: "number" }
+                      }
+                    }
+                  },
+                  pagination: {
+                    type: "object",
+                    properties: {
+                      cursor: { type: "number", nullable: true }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    };
+    #swagger.responses[400] = {
+      description: "레스토랑 미션 목록 조회 실패 응답",
+      content: {
+        "application/json": {
+          schema: {
+            type: "object",
+            properties: {
+              resultType: { type: "string", example: "FAIL" },
+              error: {
+                type: "object",
+                properties: {
+                  errorCode: { type: "string", example: "M001" },
+                  reason: { type: "string" },
+                  data: { type: "object" }
+                }
+              },
+              success: { type: "object", nullable: true, example: null }
+            }
+          }
+        }
+      }
+    };
+    */
     res.status(StatusCodes.OK).success(result);
     // try {
     //     const missions = await listRestaurantMissions(

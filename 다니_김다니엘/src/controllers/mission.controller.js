@@ -5,6 +5,77 @@ import { missionSignUp } from "../services/mission.service.js";
 export const handleMissionSignUp = async (req, res, next) => {
     const missionData = bodyToMission(req.body)
     const result = await missionSignUp(parseInt(req.params.restaurantId), missionData)
+    /*
+    #swagger.summary = '미션 추가 API';
+    #swagger.parameters['restaurantId'] = {
+      in: 'path',
+      required: true,
+      type: 'integer',
+      description: '레스토랑 ID'
+    };
+    #swagger.requestBody = {
+      required: true,
+      content: {
+        "application/json": {
+          schema: {
+            type: "object",
+            properties: {
+              name: { type: "string" },
+              content: { type: "string" },
+              isActive: { type: "boolean" },
+              reward: { type: "number" }
+            }
+          }
+        }
+      }
+    };
+    #swagger.responses[200] = {
+      description: "미션 추가 성공 응답",
+      content: {
+        "application/json": {
+          schema: {
+            type: "object",
+            properties: {
+              resultType: { type: "string", example: "SUCCESS" },
+              error: { type: "object", nullable: true, example: null },
+              success: {
+                type: "object",
+                properties: {
+                  id: { type: "number" },
+                  name: { type: "string" },
+                  content: { type: "string" },
+                  isActive: { type: "boolean" },
+                  reward: { type: "number" }
+                }
+              }
+            }
+          }
+        }
+      }
+    };
+    #swagger.responses[400] = {
+      description: "미션 추가 실패 응답",
+      content: {
+        "application/json": {
+          schema: {
+            type: "object",
+            properties: {
+              resultType: { type: "string", example: "FAIL" },
+              error: {
+                type: "object",
+                properties: {
+                  errorCode: { type: "string", example: "M001" },
+                  reason: { type: "string" },
+                  data: { type: "object" }
+                }
+              },
+              success: { type: "object", nullable: true, example: null }
+            }
+          }
+        }
+      }
+    };
+    */
     res.status(StatusCodes.OK).success(result);
     // try {
     //     console.log("미션 추가를 요청했습니다!");
