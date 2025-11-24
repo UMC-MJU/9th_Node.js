@@ -17,6 +17,53 @@ import { missionExists } from "../repositories/mission.repositories.js";
 
 // 유저에게 미션 등록
 export const handleStartUserMission = async (req, res) => {
+  /*
+    #swagger.summary = '유저에게 미션 등록 시작'
+    #swagger.tags = ['UserMissions']
+    #swagger.parameters['restaurantId'] = {
+      in: 'path', required: true, type: 'number', description: '레스토랑 ID', example: 3
+    }
+    #swagger.parameters['missionId'] = {
+      in: 'path', required: true, type: 'number', description: '미션 ID', example: 9
+    }
+    #swagger.requestBody = {
+      required: true,
+      content: {
+        "application/json": {
+          schema: {
+            type: "object",
+            required: ["userId"],
+            properties: { userId: { type: "number", example: 7 } }
+          }
+        }
+      }
+    }
+    #swagger.responses[200] = {
+      description: "미션 등록 성공",
+      content: {
+        "application/json": {
+          schema: {
+            type: "object",
+            properties: {
+              resultType: { type: "string", example: "SUCCESS" },
+              error: { type: "object", nullable: true, example: null },
+              success: {
+                type: "object",
+                properties: {
+                  id: { type: "number", example: 15 },
+                  userId: { type: "number", example: 7 },
+                  missionId: { type: "number", example: 9 },
+                  isActive: { type: "boolean", example: true },
+                  createdAt: { type: "string", format: "date-time" },
+                  completedAt: { type: "string", format: "date-time", nullable: true }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  */
   const data = bodyToUserMissionStart(req.params, req.body);
   const result = await startUserMission(data);
   res.status(StatusCodes.OK).success(result);
@@ -33,6 +80,55 @@ export const handleStartUserMission = async (req, res) => {
 
 // 진행중인 미션 목록 조회
 export const handleListActiveUserMissions = async (req, res) => {
+  /*
+    #swagger.summary = '유저 진행중인 미션 목록 조회'
+    #swagger.tags = ['UserMissions']
+    #swagger.parameters['userId'] = {
+      in: 'path', required: true, type: 'number', description: '유저 ID', example: 7
+    }
+    #swagger.parameters['cursor'] = {
+      in: 'query', required: false, type: 'number', description: '페이지네이션 커서(마지막 항목 ID)', example: 30
+    }
+    #swagger.responses[200] = {
+      description: "진행중인 미션 목록",
+      content: {
+        "application/json": {
+          schema: {
+            type: "object",
+            properties: {
+              resultType: { type: "string", example: "SUCCESS" },
+              error: { type: "object", nullable: true, example: null },
+              success: {
+                type: "object",
+                properties: {
+                  data: {
+                    type: "array",
+                    items: {
+                      type: "object",
+                      properties: {
+                        id: { type: "number", example: 31 },
+                        userId: { type: "number", example: 7 },
+                        missionId: { type: "number", example: 9 },
+                        isActive: { type: "boolean", example: true },
+                        createdAt: { type: "string", format: "date-time" },
+                        completedAt: { type: "string", format: "date-time", nullable: true }
+                      }
+                    }
+                  },
+                  pagination: {
+                    type: "object",
+                    properties: {
+                      cursor: { type: "number", nullable: true, example: 31 }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  */
   const activeMissions = await listActiveUserMissions(
     Number(req.params.userId),
     typeof req.query.cursor === "string" ? Number(req.query.cursor) : 0
@@ -69,6 +165,55 @@ export const handleListActiveUserMissions = async (req, res) => {
 // 완료된 미션 목록 조회
 // src/controllers/userMission.controllers.js
 export const handleListCompletedUserMissions = async (req, res) => {
+  /*
+    #swagger.summary = '유저 완료된 미션 목록 조회'
+    #swagger.tags = ['UserMissions']
+    #swagger.parameters['userId'] = {
+      in: 'path', required: true, type: 'number', description: '유저 ID', example: 7
+    }
+    #swagger.parameters['cursor'] = {
+      in: 'query', required: false, type: 'number', description: '페이지네이션 커서(마지막 항목 ID)', example: 50
+    }
+    #swagger.responses[200] = {
+      description: "완료된 미션 목록",
+      content: {
+        "application/json": {
+          schema: {
+            type: "object",
+            properties: {
+              resultType: { type: "string", example: "SUCCESS" },
+              error: { type: "object", nullable: true, example: null },
+              success: {
+                type: "object",
+                properties: {
+                  data: {
+                    type: "array",
+                    items: {
+                      type: "object",
+                      properties: {
+                        id: { type: "number", example: 51 },
+                        userId: { type: "number", example: 7 },
+                        missionId: { type: "number", example: 9 },
+                        isActive: { type: "boolean", example: false },
+                        createdAt: { type: "string", format: "date-time" },
+                        completedAt: { type: "string", format: "date-time" }
+                      }
+                    }
+                  },
+                  pagination: {
+                    type: "object",
+                    properties: {
+                      cursor: { type: "number", nullable: true, example: 51 }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  */
   // 유저가 있는지 확인
   const user = await getUser(Number(req.params.userId));
   if (!user) {
@@ -122,6 +267,46 @@ export const handleListCompletedUserMissions = async (req, res) => {
 
 // 특정 유저가 진행 중인 미션을 완료로 변경
 export const handleCompleteUserMission = async (req, res) => {
+  /*
+    #swagger.summary = '유저 미션 완료 처리'
+    #swagger.tags = ['UserMissions']
+    #swagger.parameters['userId'] = {
+      in: 'path', required: true, type: 'number', description: '유저 ID', example: 7
+    }
+    #swagger.parameters['missionId'] = {
+      in: 'path', required: true, type: 'number', description: '미션 ID', example: 9
+    }
+    #swagger.responses[200] = {
+      description: "미션 완료 성공",
+      content: {
+        "application/json": {
+          schema: {
+            type: "object",
+            properties: {
+              resultType: { type: "string", example: "SUCCESS" },
+              error: { type: "object", nullable: true, example: null },
+              success: {
+                type: "object",
+                properties: {
+                  data: {
+                    type: "object",
+                    properties: {
+                      id: { type: "number", example: 60 },
+                      userId: { type: "number", example: 7 },
+                      missionId: { type: "number", example: 9 },
+                      isActive: { type: "boolean", example: false },
+                      createdAt: { type: "string", format: "date-time" },
+                      completedAt: { type: "string", format: "date-time" }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  */
   // 유저가 있는지 확인
   const user = await getUser(Number(req.params.userId));
   if (!user) {
