@@ -64,6 +64,80 @@ export const handleAddMissionToRestaurant = async (req, res) => {
         }
       }
     }
+    #swagger.responses[400] = {
+      description: "잘못된 요청 또는 비즈니스 유효성 실패",
+      content: {
+        "application/json": {
+          schema: {
+            type: "object",
+            properties: {
+              resultType: { type: "string", example: "FAIL" },
+              error: {
+                type: "object",
+                properties: {
+                  errorCode: {
+                    type: "string",
+                    example: "DUPLICATE_MISSION_NAME",
+                    description: "또는 MISSION_ALREADY_EXISTS | REQUIRED_MISSION_FIELDS"
+                  },
+                  reason: { type: "string", example: "이미 존재하는 미션 이름입니다." },
+                  data: { type: "object", nullable: true }
+                }
+              },
+              success: { type: "object", nullable: true, example: null }
+            }
+          }
+        }
+      }
+    }
+    #swagger.responses[404] = {
+      description: "레스토랑 또는 미션을 찾을 수 없음",
+      content: {
+        "application/json": {
+          schema: {
+            type: "object",
+            properties: {
+              resultType: { type: "string", example: "FAIL" },
+              error: {
+                type: "object",
+                properties: {
+                  errorCode: {
+                    type: "string",
+                    example: "NOT_FOUND_RESTAURANT",
+                    description: "또는 NOT_FOUND_MISSION"
+                  },
+                  reason: { type: "string", example: "존재하지 않는 레스토랑입니다." },
+                  data: { type: "object", nullable: true }
+                }
+              },
+              success: { type: "object", nullable: true, example: null }
+            }
+          }
+        }
+      }
+    }
+    #swagger.responses[500] = {
+      description: "서버 내부 오류",
+      content: {
+        "application/json": {
+          schema: {
+            type: "object",
+            properties: {
+              resultType: { type: "string", example: "FAIL" },
+              error: {
+                type: "object",
+                properties: {
+                  errorCode: { type: "string", example: "unknown" },
+                  reason: { type: "string", example: "예상치 못한 오류가 발생했습니다." },
+                  data: { type: "object", nullable: true }
+                }
+              },
+              success: { type: "object", nullable: true, example: null }
+            }
+          }
+        }
+      }
+    }
   */
   const data = bodyToRestaurantMission(req.params, req.body);
   const result = await addMissionToRestaurant(data);

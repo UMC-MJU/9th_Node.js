@@ -58,6 +58,76 @@ export const handleCreateReview = async (req, res) => {
         }
       }
     }
+    #swagger.responses[400] = {
+      description: "잘못된 요청(필드 누락/형식 오류 등)",
+      content: {
+        "application/json": {
+          schema: {
+            type: "object",
+            properties: {
+              resultType: { type: "string", example: "FAIL" },
+              error: {
+                type: "object",
+                properties: {
+                  errorCode: { type: "string", example: "VALIDATION_ERROR" },
+                  reason: { type: "string", example: "rating은 1~5 사이여야 합니다." },
+                  data: { type: "object", nullable: true }
+                }
+              },
+              success: { type: "object", nullable: true, example: null }
+            }
+          }
+        }
+      }
+    }
+    #swagger.responses[404] = {
+      description: "대상 자원이 존재하지 않음 (유저 또는 레스토랑)",
+      content: {
+        "application/json": {
+          schema: {
+            type: "object",
+            properties: {
+              resultType: { type: "string", example: "FAIL" },
+              error: {
+                type: "object",
+                properties: {
+                  errorCode: {
+                    type: "string",
+                    example: "NOT_FOUND_RESTAURANT",
+                    description: "또는 NOT_FOUND_USER"
+                  },
+                  reason: { type: "string", example: "존재하지 않는 레스토랑입니다." },
+                  data: { type: "object", nullable: true }
+                }
+              },
+              success: { type: "object", nullable: true, example: null }
+            }
+          }
+        }
+      }
+    }
+    #swagger.responses[500] = {
+      description: "서버 내부 오류",
+      content: {
+        "application/json": {
+          schema: {
+            type: "object",
+            properties: {
+              resultType: { type: "string", example: "FAIL" },
+              error: {
+                type: "object",
+                properties: {
+                  errorCode: { type: "string", example: "unknown" },
+                  reason: { type: "string", example: "예상치 못한 오류가 발생했습니다." },
+                  data: { type: "object", nullable: true }
+                }
+              },
+              success: { type: "object", nullable: true, example: null }
+            }
+          }
+        }
+      }
+    }
   */
   const reviewInput = bodyToReview(req.params, req.body);
   const result = await addReview(reviewInput);
@@ -125,6 +195,72 @@ export const handleListRestaurantReviews = async (req, res) => {
                   }
                 }
               }
+            }
+          }
+        }
+      }
+    }
+    #swagger.responses[400] = {
+      description: "잘못된 요청(쿼리 파라미터 등)",
+      content: {
+        "application/json": {
+          schema: {
+            type: "object",
+            properties: {
+              resultType: { type: "string", example: "FAIL" },
+              error: {
+                type: "object",
+                properties: {
+                  errorCode: { type: "string", example: "VALIDATION_ERROR" },
+                  reason: { type: "string", example: "cursor는 숫자여야 합니다." },
+                  data: { type: "object", nullable: true }
+                }
+              },
+              success: { type: "object", nullable: true, example: null }
+            }
+          }
+        }
+      }
+    }
+    #swagger.responses[404] = {
+      description: "레스토랑을 찾을 수 없음",
+      content: {
+        "application/json": {
+          schema: {
+            type: "object",
+            properties: {
+              resultType: { type: "string", example: "FAIL" },
+              error: {
+                type: "object",
+                properties: {
+                  errorCode: { type: "string", example: "NOT_FOUND_RESTAURANT" },
+                  reason: { type: "string", example: "존재하지 않는 레스토랑입니다." },
+                  data: { type: "object", nullable: true }
+                }
+              },
+              success: { type: "object", nullable: true, example: null }
+            }
+          }
+        }
+      }
+    }
+    #swagger.responses[500] = {
+      description: "서버 내부 오류",
+      content: {
+        "application/json": {
+          schema: {
+            type: "object",
+            properties: {
+              resultType: { type: "string", example: "FAIL" },
+              error: {
+                type: "object",
+                properties: {
+                  errorCode: { type: "string", example: "unknown" },
+                  reason: { type: "string", example: "예상치 못한 오류가 발생했습니다." },
+                  data: { type: "object", nullable: true }
+                }
+              },
+              success: { type: "object", nullable: true, example: null }
             }
           }
         }
@@ -201,6 +337,72 @@ export const handleListMyReviews = async (req, res) => {
                   }
                 }
               }
+            }
+          }
+        }
+      }
+    }
+    #swagger.responses[400] = {
+      description: "잘못된 요청(쿼리 파라미터 등)",
+      content: {
+        "application/json": {
+          schema: {
+            type: "object",
+            properties: {
+              resultType: { type: "string", example: "FAIL" },
+              error: {
+                type: "object",
+                properties: {
+                  errorCode: { type: "string", example: "VALIDATION_ERROR" },
+                  reason: { type: "string", example: "cursor는 숫자여야 합니다." },
+                  data: { type: "object", nullable: true }
+                }
+              },
+              success: { type: "object", nullable: true, example: null }
+            }
+          }
+        }
+      }
+    }
+    #swagger.responses[404] = {
+      description: "유저를 찾을 수 없음",
+      content: {
+        "application/json": {
+          schema: {
+            type: "object",
+            properties: {
+              resultType: { type: "string", example: "FAIL" },
+              error: {
+                type: "object",
+                properties: {
+                  errorCode: { type: "string", example: "NOT_FOUND_USER" },
+                  reason: { type: "string", example: "존재하지 않는 사용자입니다." },
+                  data: { type: "object", nullable: true }
+                }
+              },
+              success: { type: "object", nullable: true, example: null }
+            }
+          }
+        }
+      }
+    }
+    #swagger.responses[500] = {
+      description: "서버 내부 오류",
+      content: {
+        "application/json": {
+          schema: {
+            type: "object",
+            properties: {
+              resultType: { type: "string", example: "FAIL" },
+              error: {
+                type: "object",
+                properties: {
+                  errorCode: { type: "string", example: "unknown" },
+                  reason: { type: "string", example: "예상치 못한 오류가 발생했습니다." },
+                  data: { type: "object", nullable: true }
+                }
+              },
+              success: { type: "object", nullable: true, example: null }
             }
           }
         }

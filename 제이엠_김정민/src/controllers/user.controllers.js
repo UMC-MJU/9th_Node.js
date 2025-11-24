@@ -77,6 +77,28 @@ export const handleUserSignUp = async (req, res, next) => {
         }
       }
     };
+    #swagger.responses[500] = {
+      description: "서버 내부 오류",
+      content: {
+        "application/json": {
+          schema: {
+            type: "object",
+            properties: {
+              resultType: { type: "string", example: "FAIL" },
+              error: {
+                type: "object",
+                properties: {
+                  errorCode: { type: "string", example: "unknown" },
+                  reason: { type: "string", example: "예상치 못한 오류가 발생했습니다." },
+                  data: { type: "object", nullable: true, example: null }
+                }
+              },
+              success: { type: "object", nullable: true, example: null }
+            }
+          }
+        }
+      }
+    };
   */
 
   // try {
@@ -92,11 +114,9 @@ export const handleUserSignUp = async (req, res, next) => {
 
   const user = await userSignUp(bodyToUser(req.body));
 
-  res
-    .status(StatusCodes.CREATED)
-    .success({
-      email: user.email,
-      name: user.name,
-      favoriteFoods: user.favoriteFoods,
-    });
+  res.status(StatusCodes.CREATED).success({
+    email: user.email,
+    name: user.name,
+    favoriteFoods: user.favoriteFoods,
+  });
 };

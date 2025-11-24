@@ -56,6 +56,54 @@ export const handleCreateRestaurant = async (req, res) => {
         }
       }
     }
+    #swagger.responses[400] = {
+      description: "잘못된 요청 또는 비즈니스 유효성 실패",
+      content: {
+        "application/json": {
+          schema: {
+            type: "object",
+            properties: {
+              resultType: { type: "string", example: "FAIL" },
+              error: {
+                type: "object",
+                properties: {
+                  errorCode: {
+                    type: "string",
+                    example: "DUPLICATE_RESTAURANT_NAME",
+                    description: "또는 REQUIRED_RESTAURANT_FIELDS"
+                  },
+                  reason: { type: "string", example: "이미 존재하는 가게 이름입니다." },
+                  data: { type: "object", nullable: true, example: { name: "UMC 맛집" } }
+                }
+              },
+              success: { type: "object", nullable: true, example: null }
+            }
+          }
+        }
+      }
+    }
+    #swagger.responses[500] = {
+      description: "서버 내부 오류",
+      content: {
+        "application/json": {
+          schema: {
+            type: "object",
+            properties: {
+              resultType: { type: "string", example: "FAIL" },
+              error: {
+                type: "object",
+                properties: {
+                  errorCode: { type: "string", example: "unknown" },
+                  reason: { type: "string", example: "예상치 못한 오류가 발생했습니다." },
+                  data: { type: "object", nullable: true, example: null }
+                }
+              },
+              success: { type: "object", nullable: true, example: null }
+            }
+          }
+        }
+      }
+    }
   */
   const data = bodyToRestaurant(req.body);
   const result = await addRestaurant(data);

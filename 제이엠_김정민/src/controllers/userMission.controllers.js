@@ -63,6 +63,80 @@ export const handleStartUserMission = async (req, res) => {
         }
       }
     }
+    #swagger.responses[400] = {
+      description: "잘못된 요청 또는 비즈니스 유효성 실패",
+      content: {
+        "application/json": {
+          schema: {
+            type: "object",
+            properties: {
+              resultType: { type: "string", example: "FAIL" },
+              error: {
+                type: "object",
+                properties: {
+                  errorCode: {
+                    type: "string",
+                    example: "MISSION_NOT_REGISTERED",
+                    description: "또는 VALIDATION_ERROR"
+                  },
+                  reason: { type: "string", example: "요청 본문이 유효하지 않습니다." },
+                  data: { type: "object", nullable: true }
+                }
+              },
+              success: { type: "object", nullable: true, example: null }
+            }
+          }
+        }
+      }
+    }
+    #swagger.responses[404] = {
+      description: "유저/미션/레스토랑을 찾을 수 없음",
+      content: {
+        "application/json": {
+          schema: {
+            type: "object",
+            properties: {
+              resultType: { type: "string", example: "FAIL" },
+              error: {
+                type: "object",
+                properties: {
+                  errorCode: {
+                    type: "string",
+                    example: "NOT_FOUND_USER",
+                    description: "또는 NOT_FOUND_MISSION | NOT_FOUND_RESTAURANT"
+                  },
+                  reason: { type: "string", example: "존재하지 않는 사용자입니다." },
+                  data: { type: "object", nullable: true }
+                }
+              },
+              success: { type: "object", nullable: true, example: null }
+            }
+          }
+        }
+      }
+    }
+    #swagger.responses[500] = {
+      description: "서버 내부 오류",
+      content: {
+        "application/json": {
+          schema: {
+            type: "object",
+            properties: {
+              resultType: { type: "string", example: "FAIL" },
+              error: {
+                type: "object",
+                properties: {
+                  errorCode: { type: "string", example: "unknown" },
+                  reason: { type: "string", example: "예상치 못한 오류가 발생했습니다." },
+                  data: { type: "object", nullable: true }
+                }
+              },
+              success: { type: "object", nullable: true, example: null }
+            }
+          }
+        }
+      }
+    }
   */
   const data = bodyToUserMissionStart(req.params, req.body);
   const result = await startUserMission(data);
@@ -123,6 +197,50 @@ export const handleListActiveUserMissions = async (req, res) => {
                   }
                 }
               }
+            }
+          }
+        }
+      }
+    }
+    #swagger.responses[404] = {
+      description: "진행중인 미션이 없음",
+      content: {
+        "application/json": {
+          schema: {
+            type: "object",
+            properties: {
+              resultType: { type: "string", example: "FAIL" },
+              error: {
+                type: "object",
+                properties: {
+                  errorCode: { type: "string", example: "USER_MISSION_NOT_FOUND" },
+                  reason: { type: "string", example: "진행중인 미션이 없습니다." },
+                  data: { type: "object", nullable: true }
+                }
+              },
+              success: { type: "object", nullable: true, example: null }
+            }
+          }
+        }
+      }
+    }
+    #swagger.responses[500] = {
+      description: "서버 내부 오류",
+      content: {
+        "application/json": {
+          schema: {
+            type: "object",
+            properties: {
+              resultType: { type: "string", example: "FAIL" },
+              error: {
+                type: "object",
+                properties: {
+                  errorCode: { type: "string", example: "unknown" },
+                  reason: { type: "string", example: "예상치 못한 오류가 발생했습니다." },
+                  data: { type: "object", nullable: true }
+                }
+              },
+              success: { type: "object", nullable: true, example: null }
             }
           }
         }
@@ -208,6 +326,72 @@ export const handleListCompletedUserMissions = async (req, res) => {
                   }
                 }
               }
+            }
+          }
+        }
+      }
+    }
+    #swagger.responses[400] = {
+      description: "완료된 미션이 없음(비즈니스 규칙)",
+      content: {
+        "application/json": {
+          schema: {
+            type: "object",
+            properties: {
+              resultType: { type: "string", example: "FAIL" },
+              error: {
+                type: "object",
+                properties: {
+                  errorCode: { type: "string", example: "USER_MISSION_ALREADY_COMPLETED" },
+                  reason: { type: "string", example: "완료된 미션이 없습니다." },
+                  data: { type: "object", nullable: true }
+                }
+              },
+              success: { type: "object", nullable: true, example: null }
+            }
+          }
+        }
+      }
+    }
+    #swagger.responses[404] = {
+      description: "유저를 찾을 수 없음",
+      content: {
+        "application/json": {
+          schema: {
+            type: "object",
+            properties: {
+              resultType: { type: "string", example: "FAIL" },
+              error: {
+                type: "object",
+                properties: {
+                  errorCode: { type: "string", example: "NOT_FOUND_USER" },
+                  reason: { type: "string", example: "존재하지 않는 사용자입니다." },
+                  data: { type: "object", nullable: true }
+                }
+              },
+              success: { type: "object", nullable: true, example: null }
+            }
+          }
+        }
+      }
+    }
+    #swagger.responses[500] = {
+      description: "서버 내부 오류",
+      content: {
+        "application/json": {
+          schema: {
+            type: "object",
+            properties: {
+              resultType: { type: "string", example: "FAIL" },
+              error: {
+                type: "object",
+                properties: {
+                  errorCode: { type: "string", example: "unknown" },
+                  reason: { type: "string", example: "예상치 못한 오류가 발생했습니다." },
+                  data: { type: "object", nullable: true }
+                }
+              },
+              success: { type: "object", nullable: true, example: null }
             }
           }
         }
@@ -301,6 +485,76 @@ export const handleCompleteUserMission = async (req, res) => {
                   }
                 }
               }
+            }
+          }
+        }
+      }
+    }
+    #swagger.responses[400] = {
+      description: "이미 완료된 미션 등 비즈니스 유효성 실패",
+      content: {
+        "application/json": {
+          schema: {
+            type: "object",
+            properties: {
+              resultType: { type: "string", example: "FAIL" },
+              error: {
+                type: "object",
+                properties: {
+                  errorCode: { type: "string", example: "USER_MISSION_ALREADY_COMPLETED" },
+                  reason: { type: "string", example: "이미 완료된 미션입니다." },
+                  data: { type: "object", nullable: true }
+                }
+              },
+              success: { type: "object", nullable: true, example: null }
+            }
+          }
+        }
+      }
+    }
+    #swagger.responses[404] = {
+      description: "유저 또는 미션을 찾을 수 없음",
+      content: {
+        "application/json": {
+          schema: {
+            type: "object",
+            properties: {
+              resultType: { type: "string", example: "FAIL" },
+              error: {
+                type: "object",
+                properties: {
+                  errorCode: {
+                    type: "string",
+                    example: "NOT_FOUND_USER",
+                    description: "또는 NOT_FOUND_MISSION"
+                  },
+                  reason: { type: "string", example: "존재하지 않는 미션입니다." },
+                  data: { type: "object", nullable: true }
+                }
+              },
+              success: { type: "object", nullable: true, example: null }
+            }
+          }
+        }
+      }
+    }
+    #swagger.responses[500] = {
+      description: "서버 내부 오류",
+      content: {
+        "application/json": {
+          schema: {
+            type: "object",
+            properties: {
+              resultType: { type: "string", example: "FAIL" },
+              error: {
+                type: "object",
+                properties: {
+                  errorCode: { type: "string", example: "unknown" },
+                  reason: { type: "string", example: "예상치 못한 오류가 발생했습니다." },
+                  data: { type: "object", nullable: true }
+                }
+              },
+              success: { type: "object", nullable: true, example: null }
             }
           }
         }
