@@ -3,6 +3,8 @@ import express from "express";
 import cors from "cors";
 import morgan from "morgan";
 import cookieParser from "cookie-parser";
+import swaggerAutogen from "swagger-autogen";
+import swaggerUiExpress from "swagger-ui-express";
 import { handleUserSignUp, handleListUserReviews} from "./controllers/user.controller.js";
 import { handleRestaurantSignUp, handleListRestaurantMissions} from "./controllers/restaurant.controller.js";
 import { handleReviewSignUp } from "./controllers/review.controller.js";
@@ -52,6 +54,38 @@ app.use(express.urlencoded({ extended: false })); // 단순 객체 문자열 형
 app.use((req, res, next) => {
   console.log(`${req.method} ${req.url}`);
   next();
+});
+
+//스웨거
+app.use(
+  "/docs",
+  swaggerUiExpress.serve,
+  swaggerUiExpress.setup({}, {
+    swaggerOptions: {
+      url: "/openapi.json",
+    },
+  })
+);
+
+app.get("/openapi.json", async (req, res, next) => {
+  // #swagger.ignore = true
+  const options = {
+    openapi: "3.0.0",
+    disableLogs: true,
+    writeOutputFile: false,
+  };
+  const outputFile = "/dev/null"; // 파일 출력은 사용하지 않습니다.
+  const routes = ["./src/index.js"];
+  const doc = {
+    info: {
+      title: "UMC 9th",
+      description: "UMC 9th Node.js 테스트 프로젝트입니다.",
+    },
+    host: "localhost:3000",
+  };
+
+  const result = await swaggerAutogen(options)(outputFile, routes, doc);
+  res.json(result ? result.data : null);
 });
 
 app.get("/", (req, res) => {
