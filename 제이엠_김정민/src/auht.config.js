@@ -22,4 +22,62 @@ export const generateRefreshToken = (user) => {
   return jwt.sign({ id: user.id }, secret, { expiresIn: "14d" });
 };
 
-//
+// Google 로그인 전략 정의
+
+// GoogleVerify 함수 정의
+const googleverify = async (profile) => {
+  //이메일 조회
+  const email = profile.emails?.[0]?.value;
+  if (!email) {
+    throw new Error(`profile.email was not found: ${profile}`);
+  }
+  // 이메일로 사용자 조회
+  const user = await prisma.user.findFirst({
+    where: { email },
+  });
+  // 사용자가 있으면 사용자 정보 반환
+  if (user !== null) {
+    return { id: user.id, email: user.email, name: user.name };
+  }
+
+  const created = await prisma.user.create({
+    data: {
+      email: email,
+      address_id: "추후수정필요",
+      phone_number: "추후수정필요",
+      name: profile.displayName,
+      gender: "OTHER",
+      birth: new Date(2001, 5, 1),
+      create_at: new Date(),
+      update_at: new Date(),
+      password: "추후수정필요",
+    },
+  });
+  return { id: created.id, email: created.email, name: created.name };
+};
+
+// GoogleStrategy 정의
+export const googleStrategy = new GoogleStrategy(
+  {
+    clientID: process.env.GOOGLE_CLIENT_ID,
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    callbackURL: "/auth/google/callback",
+    scope: ["email", "profile"],
+  },
+
+  async (accessToken, refreshToken, profile, cb) => {
+    try {
+      const user = await googleverify(profile);
+
+      const jwtAccessToken = generateAccessToken(user);
+      const jwtRefreshToken = generateRefreshToken(user);
+
+      return cb(null, {
+        accessToken: jwtAccessToken,
+        refreshToken: jwtRefreshToken,
+      });
+    } catch (error) {
+      return cb(error);
+    }
+  }
+);
