@@ -4,7 +4,8 @@ generator client {
 
 datasource db {
   provider = "mysql"
-  url      = env("DATABASE_URL")
+  // Prisma 7: url은 스키마에서 설정하지 않습니다. (prisma.config.js에서 설정)
+  // url = env("DATABASE_URL")
 }
 
 model address {

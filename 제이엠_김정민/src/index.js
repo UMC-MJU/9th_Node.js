@@ -18,8 +18,14 @@ import {
 } from "./controllers/userMission.controllers.js";
 import swaggerAutogen from "swagger-autogen";
 import swaggerUiExpress from "swagger-ui-express";
+import passport from "passport";
+import { googleStrategy, jwtStrategy } from "./auht.config.js";
 
 dotenv.config();
+
+//passport 초기화
+passport.use(googleStrategy); //GoogleStrategy 등록
+passport.use(jwtStrategy); //JWTStrategy 등록
 
 const app = express();
 const port = process.env.PORT;
@@ -51,9 +57,40 @@ app.use(express.json());
 //단순 객체 문자열 형태로 본문 데이터 해석 (form-data 형태의 요청 body를 파싱하기 위함)
 app.use(express.urlencoded({ extended: false }));
 
+//passport 세션 없이 사용하기 위해 세션 미들웨어 제거
+app.use(passport.initialize());
+
 app.get("/", (req, res) => {
   res.send("Hello World!");
 });
+
+// Google 로그인 요청
+app.get(
+  "/oauth2/login/google",
+  passport.authenticate("google", {
+    session: false,
+  })
+);
+// Google 로그인 콜백 요청
+app.get(
+  "/oauth2/callback/google",
+  passport.authenticate("google", {
+    session: false,
+    failureRedirect: "/login-failed",
+  }),
+  (req, res) => {
+    const tokens = req.user;
+
+    res.success({
+      resultType: "SUCCESS",
+      error: null,
+      success: {
+        message: "Google 로그인 성공!",
+        tokens: tokens, // { "accessToken": "...", "refreshToken": "..." }
+      },
+    });
+  }
+);
 
 // Swagger 세팅
 app.use(
@@ -141,6 +178,15 @@ app.use((err, req, res, next) => {
     errorCode: err.errorCode || "unknown",
     reason: err.reason || err.message || null,
     data: err.data || null,
+  });
+});
+
+// 구글로그인 테스트 라우트
+const isLogin = passport.authenticate("jwt", { session: false });
+app.get("/mypage", isLogin, (req, res) => {
+  res.sucess(200).success({
+    message: `인증 성공! ${req.user.name}님의 마이페이지입니다.`,
+    user: req.user,
   });
 });
 
