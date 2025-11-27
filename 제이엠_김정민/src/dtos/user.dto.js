@@ -98,3 +98,20 @@ export const responseFromUser = (data) => {
     favoriteFoods: favoriteFoodCategoriesNames,
   };
 };
+
+export const bodyToLoginUser = (body) => {
+  return {
+    email: body.email,
+    password: body.password,
+  };
+};
+
+export const responseFromLoginUser = (data) => {
+  const { user, accessToken, refreshToken } = data;
+  return {
+    email: user.email,
+    name: user.name,
+    accessToken: accessToken ?? null,
+    refreshToken: refreshToken ?? null,
+  };
+};

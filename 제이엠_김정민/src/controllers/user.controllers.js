@@ -1,6 +1,10 @@
 import { StatusCodes } from "http-status-codes";
-import { bodyToUser } from "../dtos/user.dto.js";
-import { userSignUp, userSignIn } from "../services/user.service.js";
+import { bodyToUser, bodyToLoginUser } from "../dtos/user.dto.js";
+import {
+  userSignUp,
+  userSignIn,
+  updateMyProfile,
+} from "../services/user.service.js";
 
 export const handleUserSignUp = async (req, res, next) => {
   //next => 에러를 전역 에러 핸들러로 위임할 때 사용. next(err) 형태로 사용가능
@@ -113,7 +117,7 @@ export const handleUserSignIn = async (req, res, next) => {
   console.log("로그인을 요청했습니다!");
   console.log("body:", req.body);
 
-  const loginResult = await userSignIn(bodyToUser(req.body));
+  const loginResult = await userSignIn(bodyToLoginUser(req.body));
 
   res.status(StatusCodes.OK).success({
     email: loginResult.email,
@@ -159,6 +163,44 @@ export const handleUserSignIn = async (req, res, next) => {
                   refreshToken: { type: "string" }
                 }
               }
+            }
+          }
+        }
+      }
+    }
+  */
+};
+
+// 내 정보 수정 핸들러
+export const handleUpdateMyProfile = async (req, res, next) => {
+  console.log("내 정보 수정을 요청했습니다!");
+  console.log("body:", req.body);
+
+  const updateResult = await updateMyProfile(req.user.id, bodyToUser(req.body));
+  res.status(StatusCodes.OK).success({
+    email: updateResult.email,
+    name: updateResult.name,
+    favoriteFoods: updateResult.favoriteFoods,
+  });
+  /*
+    #swagger.summary = '내 정보 수정 API'
+    #swagger.tags = ['Users']
+    #swagger.security = [
+    { bearerAuth: [] }
+    
+    #swagger.requestBody = {
+      required: false,
+      content: {
+        "application/json": {
+          schema: {
+            type: "object",
+            properties: {
+              name: { type: "string", example: "김정민" },
+              phoneNumber: { type: "string", example: "010-1234-5678" },
+              gender: { type: "string", enum: ["MALE","FEMALE","OTHER"], example: "MALE" },
+              birth: { type: "string", format: "date", example: "1999-01-23" },
+              status: { type: "string", enum: ["ACTIVE","INACTIVE","SUSPENDED","DELETED"], example: "ACTIVE" },
+              password: { type: "string", format: "password", example: "NewPassw0rd!" }
             }
           }
         }

@@ -5,6 +5,7 @@ import cors from "cors";
 import {
   handleUserSignUp,
   handleUserSignIn,
+  handleUpdateMyProfile,
 } from "./controllers/user.controllers.js";
 import {
   handleCreateReview,
@@ -142,9 +143,11 @@ app.get("/openapi.json", async (req, res, next) => {
         },
       },
     },
+    // 전역으로 security 설정하면 문제 생길 수도 있으므로 필요한 부분만 security 설정할 예정.
+    // 예) 로그인 필요한 요청에만 security 설정
     security: [
       {
-        bearerAuth: [],
+        bearerAuth: [], // 모든 요청에 인증 필요
       },
     ],
   };
@@ -160,6 +163,9 @@ app.post("/api/v1/users/signup", handleUserSignUp);
 app.post("/api/v1/users/login", handleUserSignIn);
 // 로그인 인증 미들웨어
 const isLogin = passport.authenticate("jwt", { session: false });
+
+// 내 정보 수정 (JWT 필요)
+app.patch("/api/v1/users/me", isLogin, handleUpdateMyProfile);
 
 // 레스토랑 리뷰 생성
 app.post("/api/v1/restaurants/:restaurantId/reviews", handleCreateReview);

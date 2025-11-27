@@ -50,7 +50,7 @@ const googleverify = async (profile) => {
       birth: new Date(2001, 5, 1),
       create_at: new Date(),
       update_at: new Date(),
-      password: "1234",
+      // password: "1234",
     },
   });
   return { id: created.id, email: created.email, name: created.name };

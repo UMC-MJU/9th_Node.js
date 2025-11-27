@@ -140,3 +140,18 @@ export const getUserByEmail = async (email) => {
     );
   }
 };
+
+// 사용자 정보 업데이트
+export const updateUser = async (userId, data) => {
+  try {
+    const updatedUser = await prisma.user.update({
+      where: { id: Number(userId) },
+      data,
+    });
+    return updatedUser;
+  } catch (err) {
+    throw new Error(
+      `오류가 발생했어요. 요청 파라미터를 확인해주세요. (${err})`
+    );
+  }
+};
