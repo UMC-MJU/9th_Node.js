@@ -9,6 +9,8 @@ dotenv.config();
 // Prisma 7에서는 런타임에 연결 정보를 생성자에 전달해야 합니다.
 export const prisma = new PrismaClient();
 
+export default prisma;
+
 //ORM 없이 직접 DB 접근 방식
 // export const pool = mysql.createPool({
 //   host: process.env.DB_HOST || "localhost", // mysql의 hostname
