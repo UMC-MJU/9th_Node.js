@@ -126,3 +126,17 @@ export const getUserFavoriteFoodsByUserId = async (userId) => {
     );
   }
 };
+
+// 사용자 정보를 이메일로 얻기
+export const getUserByEmail = async (email) => {
+  try {
+    const user = await prisma.user.findUnique({
+      where: { email },
+    });
+    return user; // 없으면 null
+  } catch (err) {
+    throw new Error(
+      `오류가 발생했어요. 요청 파라미터를 확인해주세요. (${err})`
+    );
+  }
+};

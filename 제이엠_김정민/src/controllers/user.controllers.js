@@ -1,6 +1,6 @@
 import { StatusCodes } from "http-status-codes";
 import { bodyToUser } from "../dtos/user.dto.js";
-import { userSignUp } from "../services/user.service.js";
+import { userSignUp, userSignIn } from "../services/user.service.js";
 
 export const handleUserSignUp = async (req, res, next) => {
   //next => 에러를 전역 에러 핸들러로 위임할 때 사용. next(err) 형태로 사용가능
@@ -100,18 +100,6 @@ export const handleUserSignUp = async (req, res, next) => {
       }
     };
   */
-
-  // try {
-  //   const user = await userSignUp(bodyToUser(req.body));
-  //   // bodyToUser => DTO
-  //   res.status(StatusCodes.CREATED).json({ result: user });
-  // } catch (err) {
-  //   // 중복 이메일 등 비즈니스 오류 처리
-  //   res
-  //     .status(StatusCodes.BAD_REQUEST)
-  //     .json({ message: err.message || "요청을 처리할 수 없습니다." });
-  // }
-
   const user = await userSignUp(bodyToUser(req.body));
 
   res.status(StatusCodes.CREATED).success({
@@ -119,4 +107,62 @@ export const handleUserSignUp = async (req, res, next) => {
     name: user.name,
     favoriteFoods: user.favoriteFoods,
   });
+};
+
+export const handleUserSignIn = async (req, res, next) => {
+  console.log("로그인을 요청했습니다!");
+  console.log("body:", req.body);
+
+  const loginResult = await userSignIn(bodyToUser(req.body));
+
+  res.status(StatusCodes.OK).success({
+    email: loginResult.email,
+    name: loginResult.name,
+    accessToken: loginResult.accessToken,
+    refreshToken: loginResult.refreshToken,
+  });
+
+  /*
+    #swagger.summary = '로그인 API'
+    #swagger.tags = ['Users']
+    #swagger.requestBody = {
+      required: true,
+      content: {
+        "application/json": {
+          schema: {
+            type: "object",
+            required: ["email","password"],
+            properties: {
+              email: { type: "string", example: "test@example.com" },
+              password: { type: "string", format: "password", example: "Passw0rd!" }
+            }
+          }
+        }
+      }
+    }
+    #swagger.responses[200] = {
+      description: "로그인 성공 (JWT 토큰 발급)",
+      content: {
+        "application/json": {
+          schema: {
+            type: "object",
+            properties: {
+              resultType: { type: "string", example: "SUCCESS" },
+              error: { type: "object", nullable: true, example: null },
+              success: {
+                type: "object",
+                properties: {
+                  id: { type: "number", example: 1 },
+                  email: { type: "string", example: "test@example.com" },
+                  name: { type: "string", example: "김정민" },
+                  accessToken: { type: "string" },
+                  refreshToken: { type: "string" }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  */
 };

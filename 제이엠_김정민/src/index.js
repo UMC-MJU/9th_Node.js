@@ -2,7 +2,10 @@
 import dotenv from "dotenv";
 import express from "express"; // -> ES Module
 import cors from "cors";
-import { handleUserSignUp } from "./controllers/user.controllers.js";
+import {
+  handleUserSignUp,
+  handleUserSignIn,
+} from "./controllers/user.controllers.js";
 import {
   handleCreateReview,
   handleListRestaurantReviews,
@@ -120,7 +123,30 @@ app.get("/openapi.json", async (req, res, next) => {
       title: "UMC 9th",
       description: "UMC 9th Node.js 테스트 프로젝트입니다.",
     },
-    host: "localhost:3000",
+    // host 대신 servers를 사용하는 것이 OpenAPI 3.0 표준입니다.
+    servers: [
+      {
+        url: "http://localhost:3000",
+        description: "개발 서버",
+      },
+    ],
+    components: {
+      securitySchemes: {
+        bearerAuth: {
+          // JWT 토큰 인증 정의
+          type: "http", // 'bearer'가 아닌 'http' 타입으로 정의
+          scheme: "bearer", // 스키마는 'bearer'
+          bearerFormat: "JWT", // 토큰 형식
+          description: "JWT 토큰을 사용하여 인증합니다.",
+          // in, name, required 필드는 'http' 타입에서는 필요하지 않습니다.
+        },
+      },
+    },
+    security: [
+      {
+        bearerAuth: [],
+      },
+    ],
   };
 
   const result = await swaggerAutogen(options)(outputFile, routes, doc);
@@ -129,6 +155,11 @@ app.get("/openapi.json", async (req, res, next) => {
 
 //회원가입 요청 처리
 app.post("/api/v1/users/signup", handleUserSignUp);
+
+// 로그인 요청 처리
+app.post("/api/v1/users/login", handleUserSignIn);
+// 로그인 인증 미들웨어
+const isLogin = passport.authenticate("jwt", { session: false });
 
 // 레스토랑 리뷰 생성
 app.post("/api/v1/restaurants/:restaurantId/reviews", handleCreateReview);
@@ -182,8 +213,6 @@ app.use((err, req, res, next) => {
 });
 
 // 구글로그인 테스트 라우트
-const isLogin = passport.authenticate("jwt", { session: false });
-
 app.get("/mypage", isLogin, (req, res) => {
   res.success({
     message: `인증 성공! ${req.user.name}님의 마이페이지입니다.`,

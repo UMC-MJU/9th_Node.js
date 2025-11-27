@@ -22,11 +22,11 @@ export const bodyToUser = (body) => {
     phoneNumber: body.phoneNumber, //필수
     createAt: toMySQLDateTime(body.createAt), // 필수 (ISO 8601 문자열)
 
-    province: body.province, //선택 (도)
-    district: body.district, //선택 (시/군/구)
-    detailAddress: body.detailAddress || "", //선택
+    province: body.province ?? null, //선택 (도)
+    district: body.district ?? null, //선택 (시/군/구)
+    detailAddress: body.detailAddress ?? null, //선택
     favoriteFoods: body.favoriteFoods, //필수
-    password: body.password, //필수
+    password: body.password ?? null, //선택
   };
 };
 
