@@ -106,7 +106,7 @@ CREATE TABLE `review` (
 -- CreateTable
 CREATE TABLE `user` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `address_id` INTEGER NOT NULL,
+    `address_id` INTEGER,
     `email` VARCHAR(255) NOT NULL,
     `phone_number` VARCHAR(20) NOT NULL,
     `name` VARCHAR(100) NOT NULL,
@@ -115,7 +115,7 @@ CREATE TABLE `user` (
     `create_at` DATETIME(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0),
     `update_at` DATETIME(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0),
     `status` ENUM('ACTIVE', 'INACTIVE', 'SUSPENDED', 'DELETED') NOT NULL DEFAULT 'ACTIVE',
-    `password` VARCHAR(255) NOT NULL,
+    `password` VARCHAR(255),
 
     UNIQUE INDEX `user_address_id_key`(`address_id`),
     UNIQUE INDEX `email`(`email`),

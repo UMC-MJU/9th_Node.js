@@ -44,14 +44,13 @@ const googleverify = async (profile) => {
   const created = await prisma.user.create({
     data: {
       email: email,
-      address_id: "추후수정필요",
-      phone_number: "추후수정필요",
+      phone_number: "추후수정",
       name: profile.displayName,
       gender: "OTHER",
       birth: new Date(2001, 5, 1),
       create_at: new Date(),
       update_at: new Date(),
-      password: "추후수정필요",
+      password: "1234",
     },
   });
   return { id: created.id, email: created.email, name: created.name };
@@ -62,7 +61,7 @@ export const googleStrategy = new GoogleStrategy(
   {
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    callbackURL: "/auth/google/callback",
+    callbackURL: "/oauth2/callback/google",
     scope: ["email", "profile"],
   },
 

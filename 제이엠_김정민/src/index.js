@@ -19,7 +19,7 @@ import {
 import swaggerAutogen from "swagger-autogen";
 import swaggerUiExpress from "swagger-ui-express";
 import passport from "passport";
-import { googleStrategy, jwtStrategy } from "./auht.config.js";
+import { googleStrategy, jwtStrategy } from "./auth.config.js";
 
 dotenv.config();
 
@@ -183,8 +183,9 @@ app.use((err, req, res, next) => {
 
 // 구글로그인 테스트 라우트
 const isLogin = passport.authenticate("jwt", { session: false });
+
 app.get("/mypage", isLogin, (req, res) => {
-  res.sucess(200).success({
+  res.success({
     message: `인증 성공! ${req.user.name}님의 마이페이지입니다.`,
     user: req.user,
   });
