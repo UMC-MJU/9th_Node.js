@@ -1,6 +1,10 @@
 import { StatusCodes } from "http-status-codes";
-import { bodyToUser } from "../dtos/user.dto.js";
-import { userSignUp } from "../services/user.service.js";
+import { bodyToUser, bodyToLoginUser } from "../dtos/user.dto.js";
+import {
+  userSignUp,
+  userSignIn,
+  updateMyProfile,
+} from "../services/user.service.js";
 
 export const handleUserSignUp = async (req, res, next) => {
   //next => 에러를 전역 에러 핸들러로 위임할 때 사용. next(err) 형태로 사용가능
@@ -16,18 +20,27 @@ export const handleUserSignUp = async (req, res, next) => {
         "application/json": {
           schema: {
             type: "object",
-            required: ["email","name","gender","birth","phoneNumber","favoriteFoods","password"],
+            required: [
+              "email",
+              "name",
+              "gender",
+              "birth",
+              "phoneNumber",
+              "favoriteFoods",
+              "password"
+            ],
             properties: {
-              email: { type: "string", example: "test@example.com" },
-              name: { type: "string", example: "test" },
-              gender: { type: "string", enum: ["MALE","FEMALE"], example: "MALE" },
-              birth: { type: "string", format: "date", example: "1999-01-23" },
-              province: { type: "string", example: "서울특별시" },
-              district: { type: "string", example: "강남구" },
-              detailAddress: { type: "string", example: "테헤란로 123 4층" },
-              phoneNumber: { type: "string", example: "010-1234-5678" },
-              favoriteFoods: { type: "array", items: { type: "number" }, example: [1, 2, 3] },
-              password: { type: "string", format: "password", example: "Passw0rd!" }
+              email:        { type: "string", example: "test@example.com" },
+              name:         { type: "string", example: "홍길동" },
+              gender:       { type: "string", enum: ["MALE","FEMALE","OTHER"], example: "MALE" },
+              birth:        { type: "string", format: "date", example: "1999-01-23" },
+              province:     { type: "string", example: "서울특별시" },
+              district:     { type: "string", example: "강남구" },
+              detailAddress:{ type: "string", example: "테헤란로 123 4층" },
+              phoneNumber:  { type: "string", example: "010-1234-5678" },
+              favoriteFoods:{ type: "array", items: { type: "number" }, example: [1,2,3] },
+              password:     { type: "string", format: "password", example: "Passw0rd!" },
+              role:         { type: "string", enum: ["ADMIN","USER"], example: "USER" }
             }
           }
         }
@@ -47,6 +60,7 @@ export const handleUserSignUp = async (req, res, next) => {
                 properties: {
                   email: { type: "string", example: "user@example.com" },
                   name: { type: "string", example: "김정민" },
+                  role: { type: "string", example: "USER" },
                   favoriteFoods: { type: "array", items: { type: "string" }, example: ["한식", "일식", "중식"] }
                 }
               }
@@ -100,18 +114,6 @@ export const handleUserSignUp = async (req, res, next) => {
       }
     };
   */
-
-  // try {
-  //   const user = await userSignUp(bodyToUser(req.body));
-  //   // bodyToUser => DTO
-  //   res.status(StatusCodes.CREATED).json({ result: user });
-  // } catch (err) {
-  //   // 중복 이메일 등 비즈니스 오류 처리
-  //   res
-  //     .status(StatusCodes.BAD_REQUEST)
-  //     .json({ message: err.message || "요청을 처리할 수 없습니다." });
-  // }
-
   const user = await userSignUp(bodyToUser(req.body));
 
   res.status(StatusCodes.CREATED).success({
@@ -119,4 +121,127 @@ export const handleUserSignUp = async (req, res, next) => {
     name: user.name,
     favoriteFoods: user.favoriteFoods,
   });
+};
+
+export const handleUserSignIn = async (req, res, next) => {
+  console.log("로그인을 요청했습니다!");
+  console.log("body:", req.body);
+
+  const loginResult = await userSignIn(bodyToLoginUser(req.body));
+
+  res.status(StatusCodes.OK).success({
+    email: loginResult.email,
+    name: loginResult.name,
+    role: loginResult.role,
+    accessToken: loginResult.accessToken,
+    refreshToken: loginResult.refreshToken,
+  });
+
+  /*
+    #swagger.summary = '로그인 API'
+    #swagger.tags = ['Users']
+    #swagger.requestBody = {
+      required: true,
+      content: {
+        "application/json": {
+          schema: {
+            type: "object",
+            required: ["email","password"],
+            properties: {
+              email: { type: "string", example: "test@example.com" },
+              password: { type: "string", format: "password", example: "Passw0rd!" }
+            }
+          }
+        }
+      }
+    }
+    #swagger.responses[200] = {
+      description: "로그인 성공 (JWT 토큰 발급)",
+      content: {
+        "application/json": {
+          schema: {
+            type: "object",
+            properties: {
+              resultType: { type: "string", example: "SUCCESS" },
+              error: { type: "object", nullable: true, example: null },
+              success: {
+                type: "object",
+                properties: {
+                  email: { type: "string", example: "test@example.com" },
+                  name: { type: "string", example: "김정민" },
+                  role:         { type: "string", example: "USER" },
+                  accessToken: { type: "string" },
+                  refreshToken: { type: "string" }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  */
+};
+
+// 내 정보 수정 핸들러
+export const handleUpdateMyProfile = async (req, res, next) => {
+  console.log("내 정보 수정을 요청했습니다!");
+  console.log("body:", req.body);
+
+  const updateResult = await updateMyProfile(req.user.id, req.body); // req.body => 수정할 정보
+  res.status(StatusCodes.OK).success({
+    email: updateResult.email,
+    name: updateResult.name,
+    favoriteFoods: updateResult.favoriteFoods,
+  });
+  /*
+  #swagger.summary = '내 정보 수정 API'
+    #swagger.tags = ['Users']
+    #swagger.security = [{ bearerAuth: [] }]
+    #swagger.requestBody = {
+      required: false,
+      content: {
+        "application/json": {
+          schema: {
+            type: "object",
+            description: "보낸 필드만 수정되고, 안 보낸 필드는 기존 값 유지",
+            properties: {
+              name:        { type: "string", example: "김정민" },
+              phoneNumber: { type: "string", example: "010-1234-5678" },
+              gender:      { type: "string", enum: ["MALE","FEMALE","OTHER"], example: "FEMALE" },
+              birth:       { type: "string", format: "date", example: "1998-05-21" },
+              status:      { type: "string", enum: ["ACTIVE","INACTIVE","SUSPENDED","DELETED"], example: "ACTIVE" },
+              password:    { type: "string", format: "password", example: "NewPassw0rd!" }
+            }
+          }
+        }
+      }
+    }
+    #swagger.responses[200] = {
+      description: "내 정보 수정 성공",
+      content: {
+        "application/json": {
+          schema: {
+            type: "object",
+            properties: {
+              resultType: { type: "string", example: "SUCCESS" },
+              error:      { type: "object", nullable: true, example: null },
+              success: {
+                type: "object",
+                properties: {
+                  id:          { type: "number", example: 1 },
+                  email:       { type: "string", example: "me@example.com" },
+                  name:        { type: "string", example: "김정민" },
+                  phoneNumber: { type: "string", example: "010-1234-5678" },
+                  gender:      { type: "string", example: "FEMALE" },
+                  birth:       { type: "string", format: "date", example: "1998-05-21" },
+                  status:      { type: "string", example: "ACTIVE" },
+                  role:        { type: "string", example: "USER" }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  */
 };

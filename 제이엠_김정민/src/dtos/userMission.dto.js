@@ -1,9 +1,9 @@
 // 유저에게 미션 등록 시 요청
-export const bodyToUserMissionStart = (params, body) => {
+export const bodyToUserMissionStart = (params, userId) => {
   return {
     restaurantId: Number(params.restaurantId || body.restaurantId),
     missionId: Number(params.missionId || body.missionId),
-    userId: Number(body.userId),
+    userId: Number(userId),
   };
 };
 // 유저에게 미션 등록 시 응답

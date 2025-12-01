@@ -140,3 +140,27 @@ export class UserMissionNotFoundError extends Error {
     this.data = data;
   }
 }
+
+// 비밀번호가 일치하지 않을 경우 에러
+export class InvalidPasswordError extends Error {
+  errorCode = "INVALID_PASSWORD";
+  statusCode = 400;
+
+  constructor(reason, data) {
+    super(reason);
+    this.reason = reason;
+    this.data = data;
+  }
+}
+
+// 이메일이 존재하지 않을 경우 에러
+export class EmailNotFoundError extends Error {
+  errorCode = "EMAIL_NOT_FOUND";
+  statusCode = 404;
+
+  constructor(reason, data) {
+    super(reason);
+    this.reason = reason;
+    this.data = data;
+  }
+}
