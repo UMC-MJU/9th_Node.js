@@ -198,12 +198,14 @@ app.get("/api/v1/users/:userId/reviews", isLogin, handleListMyReviews);
 // 호출 url 변경 (users/:userId/missions/active -> user-missions/active)
 app.get("/api/v1/user-missions/active", isLogin, handleListActiveUserMissions);
 //특정 유저가 진행완료된 미션 목록 조회 => 로그인확인
+// 호출 url 변경 (users/:userId/missions/completed -> user-missions/completed)
 app.get(
-  "/api/v1/users/:userId/missions/completed",
+  "/api/v1/user-missions/completed",
   isLogin,
   handleListCompletedUserMissions
 );
 // 특정 유저가 진행 중인 미션을 완료로 변경 => 로그인 확인
+// 호출 url 변경 (users/:userId/missions/:missionId/complete-mission -> user-missions/mission/:missionId/complete)
 app.patch(
   "/api/v1/user-missions/mission/:missionId/complete",
   isLogin,
