@@ -571,7 +571,7 @@ export const handleCompleteUserMission = async (req, res) => {
     }
   */
   // 유저가 있는지 확인
-  const user = await getUser(Number(req.params.userId));
+  const user = await getUser(Number(req.user.id));
   if (!user) {
     throw new UserNotFoundError("존재하지 않는 사용자입니다.");
   }
@@ -583,7 +583,7 @@ export const handleCompleteUserMission = async (req, res) => {
   }
 
   const result = await completeUserMission(
-    Number(req.params.userId),
+    Number(req.user.id),
     Number(req.params.missionId)
   );
   res.status(StatusCodes.OK).success(result);

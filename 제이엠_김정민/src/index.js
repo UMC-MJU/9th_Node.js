@@ -205,7 +205,7 @@ app.get(
 );
 // 특정 유저가 진행 중인 미션을 완료로 변경 => 로그인 확인
 app.patch(
-  "/api/v1/users/:userId/missions/:missionId/complete-mission",
+  "/api/v1/user-missions/mission/:missionId/complete",
   isLogin,
   handleCompleteUserMission
 );
