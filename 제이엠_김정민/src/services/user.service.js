@@ -105,6 +105,9 @@ export const updateMyProfile = async (userId, body) => {
   }
   if (body.birth !== undefined) {
     updateData.birth = new Date(body.birth); // "YYYY-MM-DD" 기준
+    if (!Number.isNaN(d.getTime())) {
+      updateData.birth = d; // ✅ 유효한 날짜일 때만 저장
+    }
   }
   if (body.status !== undefined) {
     updateData.status = body.status; // ACTIVE / INACTIVE / ...

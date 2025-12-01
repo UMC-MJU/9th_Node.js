@@ -157,15 +157,15 @@ app.get("/openapi.json", async (req, res, next) => {
 });
 
 //회원가입 요청 처리
-app.post("/api/v1/users/signup", handleUserSignUp);
+app.post("/api/v1/user/signup", handleUserSignUp);
 
 // 로그인 요청 처리
-app.post("/api/v1/users/login", handleUserSignIn);
+app.post("/api/v1/user/login", handleUserSignIn);
 // 로그인 인증 미들웨어
 const isLogin = passport.authenticate("jwt", { session: false });
 
 // 내 정보 수정 (JWT 필요), isLogin 미들웨어 사용
-app.patch("/api/v1/users/me", isLogin, handleUpdateMyProfile);
+app.patch("/api/v1/user/me", isLogin, handleUpdateMyProfile);
 
 // 레스토랑 리뷰 생성
 app.post("/api/v1/restaurants/:restaurantId/reviews", handleCreateReview);
@@ -228,7 +228,7 @@ app.use((err, req, res, next) => {
 });
 
 // 구글로그인 테스트 라우트
-app.get("/mypage", isLogin, (req, res) => {
+app.get("/api/v1/user/me", isLogin, (req, res) => {
   res.success({
     message: `인증 성공! ${req.user.name}님의 마이페이지입니다.`,
     user: req.user,

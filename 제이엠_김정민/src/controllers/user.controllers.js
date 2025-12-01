@@ -177,7 +177,7 @@ export const handleUpdateMyProfile = async (req, res, next) => {
   console.log("내 정보 수정을 요청했습니다!");
   console.log("body:", req.body);
 
-  const updateResult = await updateMyProfile(req.user.id, bodyToUser(req.body));
+  const updateResult = await updateMyProfile(req.user.id, req.body); // req.body => 수정할 정보
   res.status(StatusCodes.OK).success({
     email: updateResult.email,
     name: updateResult.name,
