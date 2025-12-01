@@ -32,6 +32,7 @@ export const userSignUp = async (data) => {
     detailAddress: data.detailAddress,
     favoriteFoods: data.favoriteFoods,
     passwordHash,
+    role: data.role ?? "USER", //선택 (기본값: USER)
   });
 
   if (joinUserId === null) {

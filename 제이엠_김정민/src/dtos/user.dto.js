@@ -27,6 +27,7 @@ export const bodyToUser = (body) => {
     detailAddress: body.detailAddress ?? null, //선택
     favoriteFoods: body.favoriteFoods, //필수
     password: body.password ?? null, //선택
+    role: body.role ?? "USER", //선택 (기본값: USER)
   };
 };
 
@@ -83,6 +84,7 @@ export const responseFromUser = (data) => {
     email: singleUser.email,
     name: singleUser.name,
     gender: singleUser.gender,
+    role: singleUser.role ?? "USER", //선택 (기본값: USER)
 
     // DB에서 스네이크 케이스로 저장된 필드
     phoneNumber: singleUser.phone_number || null, // DB 필드: phone_number
@@ -111,6 +113,7 @@ export const responseFromLoginUser = (data) => {
   return {
     email: user.email,
     name: user.name,
+    role: user.role ?? "USER", //선택 (기본값: USER)
     accessToken: accessToken ?? null,
     refreshToken: refreshToken ?? null,
   };

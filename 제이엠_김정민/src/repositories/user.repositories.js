@@ -50,6 +50,7 @@ export const addUser = async (data) => {
           create_at: now,
           update_at: now,
           password: data.passwordHash,
+          role: data.role ?? "USER", //선택 (기본값: USER)
         },
         select: { id: true },
       });

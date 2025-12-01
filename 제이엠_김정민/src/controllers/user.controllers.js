@@ -122,6 +122,7 @@ export const handleUserSignIn = async (req, res, next) => {
   res.status(StatusCodes.OK).success({
     email: loginResult.email,
     name: loginResult.name,
+    role: loginResult.role,
     accessToken: loginResult.accessToken,
     refreshToken: loginResult.refreshToken,
   });
@@ -186,8 +187,7 @@ export const handleUpdateMyProfile = async (req, res, next) => {
     #swagger.summary = '내 정보 수정 API'
     #swagger.tags = ['Users']
     #swagger.security = [
-    { bearerAuth: [] }
-    
+    { bearerAuth: [] }]
     #swagger.requestBody = {
       required: false,
       content: {

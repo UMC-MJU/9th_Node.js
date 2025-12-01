@@ -23,7 +23,7 @@ import {
 import swaggerAutogen from "swagger-autogen";
 import swaggerUiExpress from "swagger-ui-express";
 import passport from "passport";
-import { googleStrategy, jwtStrategy } from "./auth.config.js";
+import { googleStrategy, jwtStrategy, isAdmin } from "./auth.config.js";
 
 dotenv.config();
 
@@ -164,18 +164,20 @@ app.post("/api/v1/users/login", handleUserSignIn);
 // 로그인 인증 미들웨어
 const isLogin = passport.authenticate("jwt", { session: false });
 
-// 내 정보 수정 (JWT 필요)
+// 내 정보 수정 (JWT 필요), isLogin 미들웨어 사용
 app.patch("/api/v1/users/me", isLogin, handleUpdateMyProfile);
 
 // 레스토랑 리뷰 생성
 app.post("/api/v1/restaurants/:restaurantId/reviews", handleCreateReview);
 
-// 가게 생성 (URL에 regionId 불필요)
-app.post("/api/v1/restaurants", handleCreateRestaurant);
+// 가게 생성 (URL에 regionId 불필요) => 로그인확인 + 관리자 권한 확인
+app.post("/api/v1/restaurants", isLogin, isAdmin, handleCreateRestaurant);
 
-// 가게에 미션 추가
+// 가게에 미션 추가 =>  로그인확인 + 권리자 권환 확인
 app.post(
   "/api/v1/restaurants/:restaurantId/missions",
+  isLogin,
+  isAdmin,
   handleAddMissionToRestaurant
 );
 // 유저가 가게의 특정 미션 도전 시작

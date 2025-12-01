@@ -126,14 +126,15 @@ model user {
   address_id   Int?         @unique   // ✅ 선택값(Int?)으로 변경
   address      address?    @relation(fields: [address_id], references: [id]) // ✅ 선택값(address?)으로 변경
   email        String      @unique(map: "email") @db.VarChar(255)
-  phone_number String     @db.VarChar(20)
+  phone_number String?     @db.VarChar(20)
   name         String      @db.VarChar(100)
   gender       Gender
-  birth        DateTime    @db.Date
+  birth        DateTime?    @db.Date // ✅ 선택값(DateTime?)으로 변경
   create_at    DateTime    @default(now()) @db.DateTime(0)
   update_at    DateTime    @default(now()) @db.DateTime(0)
   status       Status     @default(ACTIVE)
   password     String?      @db.VarChar(255) // ✅ 선택값(String?)으로 변경
+  role         Role        @default(USER)
 
   points point?
   comments comment[]
@@ -153,6 +154,11 @@ enum Status {
   INACTIVE
   SUSPENDED
   DELETED
+}
+
+enum Role {
+  ADMIN
+  USER
 }
 
 model user_favor_category {

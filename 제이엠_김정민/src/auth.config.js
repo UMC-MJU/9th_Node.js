@@ -105,3 +105,15 @@ export const jwtStrategy = new JwtStrategy(
     }
   }
 );
+
+// ADMIN 권한 확인 미들웨어
+export const isAdmin = (req, res, next) => {
+  if (req.user.role !== "ADMIN") {
+    return res.status(403).error({
+      errorCode: "FORBIDDEN",
+      reason: "관리자 권한이 필요합니다.",
+      data: null,
+    });
+  }
+  next();
+};
