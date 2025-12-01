@@ -253,7 +253,7 @@ export const handleListActiveUserMissions = async (req, res) => {
     }
   */
   const activeMissions = await listActiveUserMissions(
-    Number(req.params.userId),
+    Number(req.user.id),
     typeof req.query.cursor === "string" ? Number(req.query.cursor) : 0
   );
 
