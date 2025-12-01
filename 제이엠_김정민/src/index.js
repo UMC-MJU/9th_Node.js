@@ -197,7 +197,7 @@ app.get(
   handleListRestaurantReviews
 );
 //특정 유저가 쓴 리뷰 조회 => 로그인확인
-app.get("/api/v1/users/:userId/reviews", isLogin, handleListMyReviews);
+app.get("/api/v1/user-reviews", isLogin, handleListMyReviews);
 //특정 유저가 진행중인 미션 목록 조회 => 로그인확인
 // 호출 url 변경 (users/:userId/missions/active -> user-missions/active)
 app.get("/api/v1/user-missions/active", isLogin, handleListActiveUserMissions);

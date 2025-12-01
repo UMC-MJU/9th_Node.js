@@ -28,18 +28,6 @@ export const handleStartUserMission = async (req, res) => {
     #swagger.parameters['missionId'] = {
       in: 'path', required: true, type: 'number', description: '미션 ID', example: 9
     }
-    #swagger.requestBody = {
-      required: true,
-      content: {
-        "application/json": {
-          schema: {
-            type: "object",
-            required: ["userId"],
-            properties: { userId: { type: "number", example: 7 } }
-          }
-        }
-      }
-    }
     #swagger.responses[200] = {
       description: "미션 등록 성공",
       content: {
@@ -162,9 +150,6 @@ export const handleListActiveUserMissions = async (req, res) => {
     #swagger.tags = ['UserMissions']
     #swagger.security = [
     { bearerAuth: [] }]
-    #swagger.parameters['userId'] = {
-      in: 'path', required: true, type: 'number', description: '유저 ID', example: 7
-    }
     #swagger.parameters['cursor'] = {
       in: 'query', required: false, type: 'number', description: '페이지네이션 커서(마지막 항목 ID)', example: 30
     }
@@ -293,9 +278,6 @@ export const handleListCompletedUserMissions = async (req, res) => {
     #swagger.tags = ['UserMissions']
     #swagger.security = [
     { bearerAuth: [] }]
-    #swagger.parameters['userId'] = {
-      in: 'path', required: true, type: 'number', description: '유저 ID', example: 7
-    }
     #swagger.parameters['cursor'] = {
       in: 'query', required: false, type: 'number', description: '페이지네이션 커서(마지막 항목 ID)', example: 50
     }
@@ -463,9 +445,6 @@ export const handleCompleteUserMission = async (req, res) => {
     #swagger.tags = ['UserMissions']
     #swagger.security = [
     { bearerAuth: [] }]
-    #swagger.parameters['userId'] = {
-      in: 'path', required: true, type: 'number', description: '유저 ID', example: 7
-    }
     #swagger.parameters['missionId'] = {
       in: 'path', required: true, type: 'number', description: '미션 ID', example: 9
     }

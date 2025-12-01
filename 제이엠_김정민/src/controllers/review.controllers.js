@@ -292,13 +292,6 @@ export const handleListMyReviews = async (req, res) => {
     #swagger.tags = ['Reviews']
     #swagger.security = [
     { bearerAuth: [] }]
-    #swagger.parameters['userId'] = {
-      in: 'path',
-      required: true,
-      type: 'number',
-      description: '유저 ID',
-      example: 7
-    }
     #swagger.parameters['cursor'] = {
       in: 'query',
       required: false,
@@ -413,7 +406,7 @@ export const handleListMyReviews = async (req, res) => {
     }
   */
   const reviews = await listMyReviews(
-    Number(req.params.userId),
+    Number(req.user.id),
     typeof req.query.cursor === "string" ? Number(req.query.cursor) : 0
   );
   res.status(StatusCodes.OK).success(reviews);
