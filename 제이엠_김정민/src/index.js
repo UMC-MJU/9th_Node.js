@@ -167,8 +167,12 @@ const isLogin = passport.authenticate("jwt", { session: false });
 // 내 정보 수정 (JWT 필요), isLogin 미들웨어 사용
 app.patch("/api/v1/user/me", isLogin, handleUpdateMyProfile);
 
-// 레스토랑 리뷰 생성
-app.post("/api/v1/restaurants/:restaurantId/reviews", handleCreateReview);
+// 레스토랑 리뷰 생성 => 로그인확인
+app.post(
+  "/api/v1/restaurants/:restaurantId/reviews",
+  isLogin,
+  handleCreateReview
+);
 
 // 가게 생성 (URL에 regionId 불필요) => 로그인확인 + 관리자 권한 확인
 app.post("/api/v1/restaurants", isLogin, isAdmin, handleCreateRestaurant);

@@ -129,7 +129,8 @@ export const handleCreateReview = async (req, res) => {
       }
     }
   */
-  const reviewInput = bodyToReview(req.params, req.body);
+  const reviewInput = bodyToReview(req.params, req.body, req.user.id);
+  // req.user.id => 로그인한 유저의 ID 를 토큰으로 확인했으므로 body에서 넘겨줄 필요 없음.
   const result = await addReview(reviewInput);
   res.status(StatusCodes.OK).success(result);
   // try {

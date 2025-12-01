@@ -1,8 +1,8 @@
-export const bodyToReview = (params, body) => {
+export const bodyToReview = (params, body, userId) => {
   const restaurantId = Number(params.restaurantId || body.restaurantId);
 
   return {
-    userId: Number(body.userId),
+    userId: Number(userId),
     restaurantId,
     description: body.description,
     rating: Number(body.rating),
