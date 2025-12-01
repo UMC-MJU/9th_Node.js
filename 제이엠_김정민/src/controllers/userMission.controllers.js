@@ -20,6 +20,8 @@ export const handleStartUserMission = async (req, res) => {
   /*
     #swagger.summary = '유저에게 미션 등록 시작'
     #swagger.tags = ['UserMissions']
+    #swagger.security = [
+    { bearerAuth: [] }]
     #swagger.parameters['restaurantId'] = {
       in: 'path', required: true, type: 'number', description: '레스토랑 ID', example: 3
     }
@@ -138,7 +140,8 @@ export const handleStartUserMission = async (req, res) => {
       }
     }
   */
-  const data = bodyToUserMissionStart(req.params, req.body);
+  const data = bodyToUserMissionStart(req.params, req.user.id);
+  // req.user.id => 로그인한 유저의 ID 를 토큰으로 확인했으므로 body에서 넘겨줄 필요 없음.
   const result = await startUserMission(data);
   res.status(StatusCodes.OK).success(result);
   // try {

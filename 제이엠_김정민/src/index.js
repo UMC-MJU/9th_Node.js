@@ -23,7 +23,7 @@ import {
 import swaggerAutogen from "swagger-autogen";
 import swaggerUiExpress from "swagger-ui-express";
 import passport from "passport";
-import { googleStrategy, jwtStrategy, isAdmin } from "./auth.config.js";
+import { googleStrategy, jwtStrategy, isAdmin, isUser } from "./auth.config.js";
 
 dotenv.config();
 
@@ -180,28 +180,36 @@ app.post(
   isAdmin,
   handleAddMissionToRestaurant
 );
-// 유저가 가게의 특정 미션 도전 시작
+// 유저가 가게의 특정 미션 도전 시작 => 로그인확인 + USER 권한 확인 (관리자는 제외)
 app.post(
   "/api/v1/restaurants/:restaurantId/missions/:missionId/user-missions",
+  isLogin,
+  isUser,
   handleStartUserMission
 );
-// 가게에 속한 모든 리뷰 조회
+// 가게에 속한 모든 리뷰 조회 => 로그인 안해도 볼 수 있도록 함.
 app.get(
   "/api/v1/restaurants/:restaurantID/reviews",
   handleListRestaurantReviews
 );
-//특정 유저가 쓴 리뷰 조회
-app.get("/api/v1/users/:userId/reviews", handleListMyReviews);
-//특정 유저가 진행중인 미션 목록 조회
-app.get("/api/v1/users/:userId/missions/active", handleListActiveUserMissions);
-//특정 유저가 진행완료된 미션 목록 조회
+//특정 유저가 쓴 리뷰 조회 => 로그인확인
+app.get("/api/v1/users/:userId/reviews", isLogin, handleListMyReviews);
+//특정 유저가 진행중인 미션 목록 조회 => 로그인확인
+app.get(
+  "/api/v1/users/:userId/missions/active",
+  isLogin,
+  handleListActiveUserMissions
+);
+//특정 유저가 진행완료된 미션 목록 조회 => 로그인확인
 app.get(
   "/api/v1/users/:userId/missions/completed",
+  isLogin,
   handleListCompletedUserMissions
 );
-// 특정 유저가 진행 중인 미션을 완료로 변경
+// 특정 유저가 진행 중인 미션을 완료로 변경 => 로그인 확인
 app.patch(
   "/api/v1/users/:userId/missions/:missionId/complete-mission",
+  isLogin,
   handleCompleteUserMission
 );
 

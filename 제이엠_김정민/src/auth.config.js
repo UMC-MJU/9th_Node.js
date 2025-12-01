@@ -117,3 +117,15 @@ export const isAdmin = (req, res, next) => {
   }
   next();
 };
+
+// USER 권한 확인 미들웨어
+export const isUser = (req, res, next) => {
+  if (req.user.role !== "USER") {
+    return res.status(403).error({
+      errorCode: "FORBIDDEN",
+      reason: "사용자 권한이 필요합니다.",
+      data: null,
+    });
+  }
+  next();
+};
