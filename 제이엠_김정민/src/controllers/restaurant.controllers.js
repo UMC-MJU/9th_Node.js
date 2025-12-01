@@ -6,6 +6,8 @@ export const handleCreateRestaurant = async (req, res) => {
   /*
     #swagger.summary = '레스토랑 생성'
     #swagger.tags = ['Restaurants']
+    #swagger.security = [
+    { bearerAuth: [] }]
     #swagger.requestBody = {
       required: true,
       content: {

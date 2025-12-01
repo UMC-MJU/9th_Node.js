@@ -289,6 +289,8 @@ export const handleListMyReviews = async (req, res) => {
   /*
     #swagger.summary = '특정 유저가 작성한 리뷰 목록 조회'
     #swagger.tags = ['Reviews']
+    #swagger.security = [
+    { bearerAuth: [] }]
     #swagger.parameters['userId'] = {
       in: 'path',
       required: true,

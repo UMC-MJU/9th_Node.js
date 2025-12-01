@@ -160,6 +160,8 @@ export const handleListActiveUserMissions = async (req, res) => {
   /*
     #swagger.summary = '유저 진행중인 미션 목록 조회'
     #swagger.tags = ['UserMissions']
+    #swagger.security = [
+    { bearerAuth: [] }]
     #swagger.parameters['userId'] = {
       in: 'path', required: true, type: 'number', description: '유저 ID', example: 7
     }
@@ -289,6 +291,8 @@ export const handleListCompletedUserMissions = async (req, res) => {
   /*
     #swagger.summary = '유저 완료된 미션 목록 조회'
     #swagger.tags = ['UserMissions']
+    #swagger.security = [
+    { bearerAuth: [] }]
     #swagger.parameters['userId'] = {
       in: 'path', required: true, type: 'number', description: '유저 ID', example: 7
     }
@@ -457,6 +461,8 @@ export const handleCompleteUserMission = async (req, res) => {
   /*
     #swagger.summary = '유저 미션 완료 처리'
     #swagger.tags = ['UserMissions']
+    #swagger.security = [
+    { bearerAuth: [] }]
     #swagger.parameters['userId'] = {
       in: 'path', required: true, type: 'number', description: '유저 ID', example: 7
     }
