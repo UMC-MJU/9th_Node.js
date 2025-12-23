@@ -129,7 +129,8 @@ export const handleCreateReview = async (req, res) => {
       }
     }
   */
-  const reviewInput = bodyToReview(req.params, req.body);
+  const reviewInput = bodyToReview(req.params, req.body, req.user.id);
+  // req.user.id => 로그인한 유저의 ID 를 토큰으로 확인했으므로 body에서 넘겨줄 필요 없음.
   const result = await addReview(reviewInput);
   res.status(StatusCodes.OK).success(result);
   // try {
@@ -289,13 +290,8 @@ export const handleListMyReviews = async (req, res) => {
   /*
     #swagger.summary = '특정 유저가 작성한 리뷰 목록 조회'
     #swagger.tags = ['Reviews']
-    #swagger.parameters['userId'] = {
-      in: 'path',
-      required: true,
-      type: 'number',
-      description: '유저 ID',
-      example: 7
-    }
+    #swagger.security = [
+    { bearerAuth: [] }]
     #swagger.parameters['cursor'] = {
       in: 'query',
       required: false,
@@ -410,7 +406,7 @@ export const handleListMyReviews = async (req, res) => {
     }
   */
   const reviews = await listMyReviews(
-    Number(req.params.userId),
+    Number(req.user.id),
     typeof req.query.cursor === "string" ? Number(req.query.cursor) : 0
   );
   res.status(StatusCodes.OK).success(reviews);

@@ -6,6 +6,8 @@ export const handleCreateRestaurant = async (req, res) => {
   /*
     #swagger.summary = '레스토랑 생성'
     #swagger.tags = ['Restaurants']
+    #swagger.security = [
+    { bearerAuth: [] }]
     #swagger.requestBody = {
       required: true,
       content: {
@@ -14,10 +16,9 @@ export const handleCreateRestaurant = async (req, res) => {
             type: "object",
             required: ["name"],
             properties: {
-              regionId: { type: "number", nullable: true, example: 1 },
+              name: { type: "string", example: "UMC 맛집" },
               province: { type: "string", nullable: true, example: "서울특별시" },
               district: { type: "string", nullable: true, example: "강남구" },
-              name: { type: "string", example: "UMC 맛집" },
               detailAddress: { type: "string", nullable: true, example: "테헤란로 123 4층" }
             }
           }

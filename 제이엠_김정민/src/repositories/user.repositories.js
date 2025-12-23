@@ -50,6 +50,7 @@ export const addUser = async (data) => {
           create_at: now,
           update_at: now,
           password: data.passwordHash,
+          role: data.role ?? "USER", //선택 (기본값: USER)
         },
         select: { id: true },
       });
@@ -120,6 +121,35 @@ export const getUserFavoriteFoodsByUserId = async (userId) => {
       user_id: m.user_id,
       name: idToName.get(m.food_category_id) || null,
     }));
+  } catch (err) {
+    throw new Error(
+      `오류가 발생했어요. 요청 파라미터를 확인해주세요. (${err})`
+    );
+  }
+};
+
+// 사용자 정보를 이메일로 얻기
+export const getUserByEmail = async (email) => {
+  try {
+    const user = await prisma.user.findUnique({
+      where: { email },
+    });
+    return user; // 없으면 null
+  } catch (err) {
+    throw new Error(
+      `오류가 발생했어요. 요청 파라미터를 확인해주세요. (${err})`
+    );
+  }
+};
+
+// 사용자 정보 업데이트
+export const updateUser = async (userId, data) => {
+  try {
+    const updatedUser = await prisma.user.update({
+      where: { id: Number(userId) },
+      data,
+    });
+    return updatedUser;
   } catch (err) {
     throw new Error(
       `오류가 발생했어요. 요청 파라미터를 확인해주세요. (${err})`

@@ -22,11 +22,12 @@ export const bodyToUser = (body) => {
     phoneNumber: body.phoneNumber, //필수
     createAt: toMySQLDateTime(body.createAt), // 필수 (ISO 8601 문자열)
 
-    province: body.province, //선택 (도)
-    district: body.district, //선택 (시/군/구)
-    detailAddress: body.detailAddress || "", //선택
+    province: body.province ?? null, //선택 (도)
+    district: body.district ?? null, //선택 (시/군/구)
+    detailAddress: body.detailAddress ?? null, //선택
     favoriteFoods: body.favoriteFoods, //필수
-    password: body.password, //필수
+    password: body.password ?? null, //선택
+    role: body.role ?? "USER", //선택 (기본값: USER)
   };
 };
 
@@ -83,6 +84,7 @@ export const responseFromUser = (data) => {
     email: singleUser.email,
     name: singleUser.name,
     gender: singleUser.gender,
+    role: singleUser.role ?? "USER", //선택 (기본값: USER)
 
     // DB에서 스네이크 케이스로 저장된 필드
     phoneNumber: singleUser.phone_number || null, // DB 필드: phone_number
@@ -96,5 +98,23 @@ export const responseFromUser = (data) => {
 
     // 선호 음식 카테고리 리스트 (user_favor_category 조인 결과의 이름 목록)
     favoriteFoods: favoriteFoodCategoriesNames,
+  };
+};
+
+export const bodyToLoginUser = (body) => {
+  return {
+    email: body.email,
+    password: body.password,
+  };
+};
+
+export const responseFromLoginUser = (data) => {
+  const { user, accessToken, refreshToken } = data;
+  return {
+    email: user.email,
+    name: user.name,
+    role: user.role ?? "USER", //선택 (기본값: USER)
+    accessToken: accessToken ?? null,
+    refreshToken: refreshToken ?? null,
   };
 };

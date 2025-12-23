@@ -6,6 +6,8 @@ export const handleAddMissionToRestaurant = async (req, res) => {
   /*
     #swagger.summary = '레스토랑에 미션 추가'
     #swagger.tags = ['Missions']
+    #swagger.security = [
+    { bearerAuth: [] }]
     #swagger.parameters['restaurantId'] = {
       in: 'path',
       required: true,

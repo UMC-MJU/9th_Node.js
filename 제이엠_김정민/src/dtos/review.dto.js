@@ -1,8 +1,8 @@
-export const bodyToReview = (params, body) => {
+export const bodyToReview = (params, body, userId) => {
   const restaurantId = Number(params.restaurantId || body.restaurantId);
 
   return {
-    userId: Number(body.userId),
+    userId: Number(userId),
     restaurantId,
     description: body.description,
     rating: Number(body.rating),
@@ -33,7 +33,9 @@ export const responseFromReviews = (reviews) => {
 
 export const responseFromMyReviews = (myReviews) => {
   return {
-    data: myReviews,
+    data: {
+      myReviews: myReviews, // 유저가 작성한 리뷰 목록
+    },
     pagination: {
       cursor: myReviews.length ? myReviews[myReviews.length - 1].id : null,
     },
